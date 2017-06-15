@@ -92,80 +92,107 @@ module ietf-access-control-list {
   }
 
   identity mixed-l2-l3-ipv4-acl {
-     base "acl:acl-base";
+    base "acl:acl-base";
      
-     description 
-        "ACL that contains a mix of entries that
-         primarily match on fields in ethernet headers,
-         entries that primarly match on IPv4 headers.
-         Matching on layer 4 header fields may also exist in the
-         list.";
+    description 
+      "ACL that contains a mix of entries that
+       primarily match on fields in ethernet headers,
+       entries that primarly match on IPv4 headers.
+       Matching on layer 4 header fields may also exist in the
+       list.";
   }
 
   identity mixed-l2-l3-ipv6-acl {
-     base "acl:acl-base";
+    base "acl:acl-base";
      
-     description 
-        "ACL that contains a mix of entries that
-         primarily match on fields in ethernet headers, entries
-         that primarily match on fields in IPv6 headers. Matching on
-         layer 4 header fields may also exist in the list.";
+    description 
+      "ACL that contains a mix of entries that
+       primarily match on fields in ethernet headers, entries
+       that primarily match on fields in IPv6 headers. Matching on
+       layer 4 header fields may also exist in the list.";
   }
 
   identity mixed-l2-l3-ipv4-ipv6-acl {
-     base "acl:acl-base";
+    base "acl:acl-base";
      
-     description 
-        "ACL that contains a mix of entries that
-         primarily match on fields in ethernet headers, entries
-         that primarily match on fields in IPv4 headers, and entries
-         that primarily match on fields in IPv6 headers. Matching on
-         layer 4 header fields may also exist in the list.";
+    description 
+      "ACL that contains a mix of entries that
+       primarily match on fields in ethernet headers, entries
+       that primarily match on fields in IPv4 headers, and entries
+       that primarily match on fields in IPv6 headers. Matching on
+       layer 4 header fields may also exist in the list.";
+  }
+  
+  identity tcp-acl {
+    base "acl:acl-base";
+  }
+  
+  identity udp-acl {
+    base "acl:acl-base";
+  }
+  
+  identity icmp-acl {
+    base "acl:acl-base";
   }
   
   identity any-acl {
-	  base "acl:acl-base";
+	base "acl:acl-base";
 	  
-	  description
-		  "ACL that can contain any pattern to match upon";
+    description
+	  "ACL that can contain any pattern to match upon";
   }
 
   /*
    * Features
    */
    feature l2-acl {
-      description
-         "Layer 2 ACL supported";
+     description
+       "Layer 2 ACL supported";
    }
 
    feature ipv4-acl {
-      description 
-         "Layer 3 IPv4 ACL supported";
+     description 
+       "Layer 3 IPv4 ACL supported";
    }
 	
    feature ipv6-acl {
-      description
-         "Layer 3 IPv6 ACL supported";
+     description
+       "Layer 3 IPv6 ACL supported";
    }
 	
    feature mixed-ipv4-acl {
-      description
-         "Layer 2 and Layer 3 IPv4 ACL supported";
+     description
+       "Layer 2 and Layer 3 IPv4 ACL supported";
    }
 	
    feature mixed-ipv6-acl {
-      description
-         "Layer 2 and Layer 3 IPv6 ACL supported";
+     description
+       "Layer 2 and Layer 3 IPv6 ACL supported";
    }
 	
    feature l2-l3-ipv4-ipv6-acl {
-      description
-         "Layer 2 and any Layer 3 ACL supported.";
+     description
+       "Layer 2 and any Layer 3 ACL supported.";
+   }
+   
+   feature tcp-acl {
+     description
+       "TCP header ACL supported.";
+   }
+   
+   feature udp-acl {
+     description
+       "UDP header ACL supported.";
+   }
+   
+   feature icmp-acl {
+     description
+       "ICMP header ACL supported.";
    }
    
    feature any-acl {
-	   description
-		   "ACL for any pattern.";
+	 description
+	   "ACL for any pattern.";
    }
 
   /*
@@ -195,31 +222,31 @@ module ietf-access-control-list {
   container access-lists {
     description
       "This is a top level container for Access Control Lists.
-      It can have one or more Access Control Lists.";
+       It can have one or more Access Control Lists.";
     list acl {
       key "acl-type acl-name";
       description
         "An Access Control List(ACL) is an ordered list of
-        Access List Entries (ACE). Each Access Control Entry has a
-        list of match criteria and a list of actions.
-        Since there are several kinds of Access Control Lists
-        implemented with different attributes for
-        different vendors, this
-        model accommodates customizing Access Control Lists for
-        each kind and for each vendor.";
+         Access List Entries (ACE). Each Access Control Entry has a
+         list of match criteria and a list of actions.
+         Since there are several kinds of Access Control Lists
+         implemented with different attributes for
+         different vendors, this
+         model accommodates customizing Access Control Lists for
+         each kind and for each vendor.";
       leaf acl-name {
         type string;
         description
           "The name of access-list. A device MAY restrict the length
-        and value of this name, possibly space and special
-        characters are not allowed.";
+           and value of this name, possibly space and special
+           characters are not allowed.";
       }
       leaf acl-type {
         type acl-type;
         description
-      "Type of access control list. Indicates the primary intended
-      type of match criteria (e.g. ethernet, IPv4, IPv6, mixed, etc)
-      used in the list instance.";
+          "Type of access control list. Indicates the primary intended
+           type of match criteria (e.g. ethernet, IPv4, IPv6, mixed, etc)
+           used in the list instance.";
       }
       container acl-oper-data {
         config false;
@@ -229,7 +256,7 @@ module ietf-access-control-list {
       container access-list-entries {
         description
           "The access-list-entries container contains
-          a list of access-list-entries(ACE).";
+           a list of access-list-entries(ACE).";
         list ace {
           key "rule-name";
           ordered-by user;
@@ -293,7 +320,8 @@ module ietf-access-control-list {
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set is L2 && IPv6 headers.";
+                "Rule set that is a logical AND (&&) of L2 
+                 && IPv6 headers.";
             }
 
             container l2-l3-ipv4-ipv6-acl {
@@ -304,7 +332,29 @@ module ietf-access-control-list {
               uses packet-fields:acl-ipv4-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that is L2 && IPv4 && IPv6 headers.";
+                "Rule set that is a logical AND (&&) of L2 
+                 && IPv4 && IPv6 headers.";
+            }
+            
+            container tcp-acl {
+              if-feature tcp-acl;
+              uses packet-fields:acl-tcp-header-fields;
+              description
+                "Rule set that defines TCP headers.";
+            }
+            
+            container udp-acl {
+              if-feature udp-acl;
+              uses packet-fields:acl-udp-header-fields;
+              description
+                "Rule set that defines UDP headers.";
+            }
+            
+            container icmp-acl {
+              if-feature icmp-acl;
+              uses packet-fields:acl-icmp-header-fields;
+              description
+                "Rule set that defines ICMP headers.";
             }
              
             container any-acl {
@@ -338,6 +388,11 @@ module ietf-access-control-list {
                     "Permit action.";
                 }
               }
+            }
+            leaf logging {
+              type boolean;
+              description
+                "Log the rule on which the match occured.";
             }
           }
           /*

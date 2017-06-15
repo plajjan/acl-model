@@ -25,7 +25,9 @@ module ietf-packet-fields {
     Editor: Lisa Huang
     lyihuang16@gmail.com
     Editor: Sonal Agarwal
-    agarwaso@cisco.com";
+    agarwaso@cisco.com
+    Editor: Dana Blair
+    dblair@cisco.com";
 
   description
     "This YANG module defines groupings that are used by
