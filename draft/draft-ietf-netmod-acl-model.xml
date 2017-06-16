@@ -52,7 +52,33 @@
       </address>
     </author>
 
-    <date day="05" month="June" year="2017"/>
+    <author fullname="Dana Blair" initials="D." surname="Blair">
+      <organization>Cisco Systems, INc</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city/>
+
+          <region/>
+
+          <code/>
+
+          <country/>
+        </postal>
+
+        <phone/>
+
+        <facsimile/>
+
+        <email>dblair@cisco.com</email>
+
+        <uri/>
+      </address>
+    </author>
+
+    <date day="15" month="June" year="2017"/>
 
     <area>Operations and Management Area</area>
 
@@ -102,7 +128,7 @@
           <t>Packet header matches apply to fields visible in the packet such
           as address or class of service or port numbers.</t>
 
-          <t>In case vendor suppors it, metadata matches apply to fields
+          <t>In case vendor supports it, metadata matches apply to fields
           associated with the packet but not in the packet header such as
           input interface or overall packet length</t>
         </list></t>
@@ -115,13 +141,13 @@
 
       <t>Access Control List is also widely knowns as ACL (pronounce as [ak-uh
       l]) or Access List. In this document, Access Control List, ACL and
-      Access List are interchangeable.</t>
+      Access List are used interchangeably.</t>
 
       <t>The matching of filters and actions in an ACE/ACL are triggered only
       after application/attachment of the ACL to an interface, VRF, vty/tty
       session, QoS policy, routing protocols amongst various other config
       attachment points. Once attached, it is used for filtering traffic using
-      the match cirteria in the ACE's and taking appropriate action(s) that
+      the match criteria in the ACE's and taking appropriate action(s) that
       have been configured against that ACE. In order to apply an ACL to any
       attachment point, vendors would have to augment the ACL YANG model.</t>
 
@@ -159,9 +185,6 @@
       filter constructs and actions that they support. Therefore this draft
       proposes a model that can be augmented by standard extensions and vendor
       proprietary models.</t>
-
-      <t>DISCUSS: Should this draft include route-policy definition as defined
-      in draft-ietf-rtgwg-policy-model?</t>
     </section>
 
     <!-- problem -->
@@ -180,19 +203,23 @@
       packet length, or source or destination prefix length. The actions can
       be any sort of operation from logging to rate limiting or dropping to
       simply forwarding. Actions on the first matching ACE are applied with no
-      processing of subsequent ACEs. The model also includes a container to
-      hold overall operational state for each ACL and operational state for
-      each ACE. One ACL can be applied to multiple targets within the device,
-      such as interfaces of a networked device, applications or features
-      running in the device, etc. When applied to interfaces of a networked
-      device, the ACL is applied in a direction which indicates if it should
-      be applied to packet entering (input) or leaving the device (output). An
-      example in the appendix shows how to express it in YANG model.</t>
+      processing of subsequent ACEs.</t>
+
+      <t>The model also includes a container to hold overall operational state
+      for each ACL and operational state for each ACE. One ACL can be applied
+      to multiple targets within the device, such as interfaces of a networked
+      device, applications or features running in the device, etc. When
+      applied to interfaces of a networked device, the ACL is applied in a
+      direction which indicates if it should be applied to packet entering
+      (input) or leaving the device (output). An example in the appendix shows
+      how to express it in YANG model.</t>
 
       <t>This draft tries to address the commonalities between all vendors and
       create a common model, which can be augmented with proprietary models.
-      The base model is very simple and with this design we hope to achieve
-      needed flexibility for each vendor to extend the base model.</t>
+      The base model is simple and with this design we hope to achieve enough
+      flexibility for each vendor to extend the base model. The use of feature
+      statements in the document allows vendors to advertise match rules they
+      support.</t>
 
       <section anchor="aclmodules" title="ACL Modules">
         <t>There are two YANG modules in the model. The first module,
@@ -201,9 +228,17 @@
         module can be viewed as providing a generic ACL "superclass". It
         imports the second module, "ietf-packet-fields". The match container
         in "ietf-access-control-list" uses groupings in "ietf-packet-fields".
-        If there is a need to define new "matches" choice, such as <xref
+        The combination of if-feature checks and must statements allow for the
+        selection of relevant match fields that a user can define rules
+        for.</t>
+
+        <t>If there is a need to define new "matches" choice, such as <xref
         target="RFC5101">IPFIX</xref>, the container "matches" can be
         augmented.</t>
+
+        <t>For a reference to the annotations used in the diagram below, see
+        <xref target="I-D.ietf-netmod-yang-tree-diagrams">YANG Tree
+        Diagrams</xref>.</t>
 
         <figure>
           <artwork><![CDATA[
@@ -221,10 +256,13 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD-tree.txt)
         name("acl-name") and a list("access-list-entries") of rules associated
         with the "acl-name". Each of the entries in the
         list("access-list-entries"), indexed by the string "rule-name", has
-        containers defining "matches" and "actions". The "matches" define
-        criteria used to identify patterns in "ietf-packet-fields". The
-        "actions" define behavior to undertake once a "match" has been
-        identified.</t>
+        containers defining "matches" and "actions".</t>
+
+        <t>The "matches" define criteria used to identify patterns in
+        "ietf-packet-fields". The "actions" define behavior to undertake once
+        a "match" has been identified. In addition to permit and deny for
+        actions, a logging option allows for a match to be logged that can be
+        used to determine which rule was matched upon.</t>
 
         <figure>
           <artwork><![CDATA[
@@ -242,11 +280,16 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD.yang)
       <section anchor="pktheaders" title="IETF Packet Fields module">
         <t>The packet fields module defines the necessary groups for matching
         on fields in the packet including ethernet, ipv4, ipv6, and transport
-        layer fields. Since the number of match criteria is very large, the
-        base draft does not include these directly but references them by
-        "uses" to keep the base module simple. In case more match conditions
-        are needed, those can be added by augmenting choices within container
-        "matches" in ietf-access-control-list.yang model.</t>
+        layer fields. The 'acl-type' node determines which of these fields get
+        included for any given ACL with the exception of TCP, UDP and ICMP
+        header fields. Those fields can be used in conjunction with any of the
+        above layer 2 or layer 3 fields.</t>
+
+        <t>Since the number of match criteria is very large, the base draft
+        does not include these directly but references them by "uses" to keep
+        the base module simple. In case more match conditions are needed,
+        those can be added by augmenting choices within container "matches" in
+        ietf-access-control-list.yang model.</t>
 
         <figure>
           <artwork><![CDATA[
@@ -431,13 +474,18 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
 
     <section title="Open Issues">
       <t><list style="symbols">
-          <t/>
-
           <t>The current model does not support the concept of "containers"
           used to contain multiple addresses per rule entry.</t>
 
           <t>The current model defines 'any' rule as a presence container,
           allowing a user to define any 'any' rule.</t>
+
+          <t>The model defines 'ether-type' node as a string. Ideally, this
+          should be a well defined list of all Ethernet Types assigned by
+          IEEE.</t>
+
+          <t>Should this draft include route-policy definition as defined in
+          draft-ietf-rtgwg-policy-model?</t>
         </list></t>
     </section>
 
@@ -459,6 +507,8 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
 
     <references title="Informative References">
       <?rfc include='reference.RFC.5101'?>
+
+      <?rfc include='reference.I-D.ietf-netmod-yang-tree-diagrams'?>
     </references>
 
     <section anchor="app-additional" title="Extending ACL model examples">
@@ -672,319 +722,9 @@ augment /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:acl-oper-data:
 
         <figure>
           <artwork><![CDATA[
-module example-newco-acl {
+INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl.yang)  
 
-  yang-version 1.1;
-
-  namespace "urn:newco:params:xml:ns:yang:example-newco-acl";
-
-  prefix example-newco-acl;
-
-  import ietf-access-control-list {
-    prefix "ietf-acl";
-  }
-
-  import ietf-interfaces {
-    prefix "ietf-if";
-  }
-  
-  import ietf-yang-types {
-    prefix yang;
-  }
-  
-  organization 
-    "Newco model group.";
-
-  contact 
-    "abc@newco.com";
-  description
-    "This YANG module augment IETF ACL Yang.";
-
-  revision 2016-10-12{
-    description 
-      "Creating NewCo proprietary extensions to ietf-acl model";
-    reference
-      "RFC XXXX: Network Access Control List (ACL)
-      YANG Data  Model";
-  }
-  
-  
-  typedef known-ether-type {
-    type enumeration {	
-      enum "ipv4" {
-        value 2048; // 0x0800
-        description "Internet Protocol version 4 (IPv4)";
-      }
-      enum "vlan-tagged" {
-        value 33024; // 0x8100
-        description 
-          "VLAN-tagged frame (IEEE 802.1Q) & Shortest Path 
-           Bridging IEEE 802.1aq[4]";
-      }
-      enum "ipv6" {
-        value 34525; // 0x86DD
-        description "Internet Protocol Version 6 (IPv6)";
-      }
-      enum "mpls-unicast" {
-        value 34887; // 0x8847
-        description "MPLS unicast";
-      }
-      enum "mpls-multicast" {
-        value 34888; // 0x8848
-        description "MPLS multicast";
-      }
-    }
-    description "Listing supported Ethertypes";
-  }
-
-  typedef ipv4-flags-type {
-    type bits {
-      bit ipv4-reserved {
-        position 0;
-        description "reserved bit";
-      }
-      bit ipv4-DF {
-        position 1;
-        description "DF bit";
-      }
-      bit ipv4-MF {
-       position 2;
-       description "MF bit";
-      }
-    }
-    description "IPv4 flag types";
-  }
-
-  augment "/ietf-acl:access-lists/ietf-acl:acl/" +
-          "ietf-acl:access-list-entries/ietf-acl:ace/" +
-          "ietf-acl:matches" {
-   when "ietf-acl:access-lists/ietf-acl:acl/" +
-        "ietf-acl:acl-type = 'ace-eth'";
-
-   description "additional MAC header matching";
-
-     leaf vlan-tagged {
-       type uint16;
-       description "Ethernet frame with VLAN tag";
-     }
-
-     leaf mpls-unicast {
-       type uint16;
-       description "Ethernet frame with MPLS unicast payload";
-     }
-
-     leaf mpls-multicast {
-       type uint16;
-       description "Ethernet frame with MPLS multicast payload";
-     }
-
-     leaf ipv4 {
-       type uint16;
-       description "Ethernet frame with IPv4 unicast payload";
-     }
-
-     leaf ipv6 {
-       type uint16;
-       description "Ethernet frame with IPv4 unicast payload";
-     }
-  }
-  augment "/ietf-acl:access-lists/ietf-acl:acl/" +
-          "ietf-acl:access-list-entries/ietf-acl:ace/" +
-          "ietf-acl:matches" {
-   when "ietf-acl:access-lists/ietf-acl:acl/" +
-        "ietf-acl:acl-type = 'ipv4-acl'";
-
-   description "additional IP header information";
-
-    leaf ipv4-ttl {
-      type uint8;
-      description "time to live of a given packet as 
-      defined in RFC791";
-    }
-
-    leaf ipv4-len {
-      type uint16;
-      description "total packet length as defined in RFC791";
-    }
-    
-    leaf ipv4-ihl {
-      type uint8 {
-         range 0..15;
-      }
-      description "Internet Header Length in 32 bit words 
-                   (see RFC791). Note that while the minimum 
-                   value for this field in a packet is 5, 
-                   we leave open the possibility here that 
-                   the packet has been corrupted.";
-    }
-    
-    leaf ipv4-id {
-      type uint16;
-      description "Identification as decribed in RFC791";
-    }
-    
-    leaf ipv4-flags {
-      type ipv4-flags-type;
-      description "IPv4 flags as defined in RFC791";
-    }
-    
-    leaf ipv4-offset {
-      type uint16 {
-         range 0..8191;
-      }
-      description "Matches on the packet fragment offset";
-    }
-   }
-   
-   augment "/ietf-acl:access-lists/ietf-acl:acl/" +
-           "ietf-acl:access-list-entries/ietf-acl:ace/" +
-           "ietf-acl:matches" {
-    description "Newco proprietary simple filter matches";
-    choice protocol-payload-choice {
-      description "Newo proprietary payload match condition";
-      list protocol-payload {
-        key value-keyword;
-        ordered-by user;
-        description "Match protocol payload";
-        uses match-simple-payload-protocol-value;
-      }
-    }
-
-    choice metadata {
-      description "Newco proprietary interface match condition";
-      list interface-name {
-        key input-interface;
-        ordered-by user;
-        description "Match interface name";
-        uses metadata;  
-      }
-    }
-  }
-
-  augment "/ietf-acl:access-lists/ietf-acl:acl/" +
-          "ietf-acl:access-list-entries/ietf-acl:ace/" +
-          "ietf-acl:actions" {
-    description "Newco proprietary simple filter actions";
-    choice action {
-      description "";
-      case count {
-        description "Count the packet in the named counter";
-        leaf count {
-          type string;
-          description "";
-        }
-      }
-      case policer {
-        description "Name of policer to use to rate-limit traffic";
-        leaf policer {
-          type string;
-          description "";
-        }
-      }
-      case hiearchical-policer {
-        description "Name of hierarchical policer to use to
-        rate-limit traffic";
-        leaf hierarchitacl-policer{
-          type string;
-          description "";
-        }
-      }
-    }
-  }
-
-  augment "/ietf-acl:access-lists/ietf-acl:acl" {
-    description "Newco proprietary default action";
-    container default-actions {
-      description 
-        "Actions that occur if no access-list entry is matched.";
-      leaf deny {
-        type empty;
-        description "";
-      }
-    }
-  }
-
-  grouping metadata {
-    description
-    "Fields associated with a packet which are not in
-    the header.";
-    leaf input-interface {
-      type ietf-if:interface-ref {
-        require-instance false;
-      }
-      description
-        "Packet was received on this interface";
-    }
-  }	
-      
-  grouping match-simple-payload-protocol-value {
-    description "Newco proprietary payload";
-    leaf value-keyword {
-      type enumeration {
-        enum icmp {
-          description "Internet Control Message Protocol";
-        }
-        enum icmp6 {
-          description "Internet Control Message Protocol Version 6";
-        }
-        enum range {
-          description "Range of values";
-        }
-      }
-
-      description "(null)";
-    }
-  }
-    
-  augment "/ietf-if:interfaces/ietf-if:interface" {
-    description "Apply ACL to interfaces";
-    container acl{
-      description "ACL related properties.";
-      leaf acl-name {
-        type ietf-acl:access-control-list-ref;
-        description "Access Control List name.";
-      }
-      leaf match-counter {
-        type yang:counter64;
-        config false;
-        description 
-          "Total match count for Access Control 
-          List on this interface";
-      }
-      choice direction {
-        description "Applying ACL in which traffic direction";
-        leaf in {
-	  type empty;
-	  description "Inbound traffic";
-	}
-        leaf out {
-	  type empty;
-	  description "Outbound traffic";
-	}
-      }
-    }
-  }
-    
-  augment "/ietf-acl:access-lists/ietf-acl:acl/" +
-          "ietf-acl:acl-oper-data" {
-    description 
-      "This is an example on how to apply acl to a target to collect
-       operational data";
-    container targets {
-      description "To which object is the ACL attached to";
-      choice interface {
-        description 
-          "Access Control List was attached to this interface";  
-        leaf-list interface-name{
-          type ietf-if:interface-ref {
-          require-instance true;
-        }
-        description "Attached to this interface name";
-      }
-    }
-  }
-}
-          ]]></artwork>
+]]></artwork>
         </figure>
 
         <t>Draft authors expect that different vendors will provide their own
