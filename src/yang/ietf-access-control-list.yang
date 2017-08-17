@@ -391,6 +391,7 @@ module ietf-access-control-list {
             }
             leaf logging {
               type boolean;
+              default false;
               description
                 "Log the rule on which the match occured.";
             }
