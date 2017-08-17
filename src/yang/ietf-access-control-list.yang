@@ -389,18 +389,25 @@ module ietf-access-control-list {
             choice packet-handling {
               description
                 "Packet handling action.";
+              case drop {
+                leaf drop {
+                  type empty;
+                  description
+                    "Silently drop packet without replying to sender with an ICMP error message.";
+                }
+              }
               case deny {
                 leaf deny {
                   type empty;
                   description
-                    "Deny action.";
+                    "Deny packet and reply to sender with an ICMP error message.";
                 }
               }
               case permit {
                 leaf permit {
                   type empty;
                   description
-                    "Permit action.";
+                    "Permit packet.";
                 }
               }
             }
