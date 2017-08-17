@@ -109,7 +109,6 @@ module ietf-access-control-list {
 
   identity eth-ipv6-acl {
     base "acl:acl-base";
-
     description
       "ACL that can match on fields in the Ethernet header, IPv6 header
       and in L4 headers. Matching on L2 headers other than Ethernet
@@ -118,7 +117,6 @@ module ietf-access-control-list {
 
   identity eth-ipv46-acl {
     base "acl:acl-base";
-
     description
       "ACL that can match on fields in the Ethernet header, from an IPv4
       or IPv6 header and layer 4 headers.";
@@ -126,21 +124,46 @@ module ietf-access-control-list {
 
   identity tcp-fields {
     base "acl:acl-base";
+    description
+      "L4 TCP header fields";
   }
 
   identity udp-fields {
     base "acl:acl-base";
+    description
+      "L4 UDP header fields";
   }
 
   identity icmp-fields {
     base "acl:acl-base";
+    description
+      "L4 ICMP header fields";
   }
 
   identity any-acl {
-	base "acl:acl-base";
-
+    base "acl:acl-base";
     description
-	  "ACL that can contain any pattern to match upon";
+      "ACL that can contain any pattern to match upon";
+  }
+
+  identity forwarding-action {
+    description
+      "Base forwarding action";
+  }
+
+  identity accept {
+    base forwarding-action;
+    description "Accept packet";
+  }
+
+  identity drop {
+    base forwarding-action;
+    description "Drop packet without sending ICMP error message";
+  }
+
+  identity reject {
+    base forwarding-action;
+    description "Reject packet by replying with an ICMP error message";
   }
 
   /*
@@ -384,33 +407,14 @@ module ietf-access-control-list {
 
           container actions {
             description
-              "Definitions of action criteria for this Access List
-               Entry.";
-            choice packet-handling {
-              description
-                "Packet handling action.";
-              case drop {
-                leaf drop {
-                  type empty;
-                  description
-                    "Silently drop packet without replying to sender with an ICMP error message.";
-                }
-              }
-              case reject {
-                leaf reject {
-                  type empty;
-                  description
-                    "Reject packet by replying to sender with an ICMP error message.";
-                }
-              }
-              case permit {
-                leaf permit {
-                  type empty;
-                  description
-                    "Permit packet.";
-                }
+              "Actions to take for packets matching this ACE.";
+
+            leaf forwarding-action {
+              type identityref {
+                base FORWARDING_ACTION;
               }
             }
+
             leaf logging {
               type boolean;
               default false;
