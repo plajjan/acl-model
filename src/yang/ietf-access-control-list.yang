@@ -387,7 +387,6 @@ module ietf-access-control-list {
               "Definitions of action criteria for this Access List
                Entry.";
             choice packet-handling {
-              default "deny";
               description
                 "Packet handling action.";
               case deny {
