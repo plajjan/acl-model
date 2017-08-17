@@ -396,11 +396,11 @@ module ietf-access-control-list {
                     "Silently drop packet without replying to sender with an ICMP error message.";
                 }
               }
-              case deny {
-                leaf deny {
+              case reject {
+                leaf reject {
                   type empty;
                   description
-                    "Deny packet and reply to sender with an ICMP error message.";
+                    "Reject packet by replying to sender with an ICMP error message.";
                 }
               }
               case permit {
