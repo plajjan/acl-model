@@ -414,6 +414,8 @@ module ietf-access-control-list {
               type identityref {
                 base FORWARDING_ACTION;
               }
+              description
+                "Forwarding action to take if packet matches this ACE."
             }
 
             leaf logging {
