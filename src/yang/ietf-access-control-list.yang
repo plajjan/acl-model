@@ -419,7 +419,7 @@ module ietf-access-control-list {
               type boolean;
               default false;
               description
-                "Log the rule on which the match occured.";
+                "Log packet that matches this ACE.";
             }
           }
           /*
