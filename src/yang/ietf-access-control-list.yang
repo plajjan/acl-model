@@ -117,65 +117,62 @@ module ietf-access-control-list {
   identity ipv4-acl {
     base acl:acl-base;
     description
-      "ACL that primarily matches on fields from the IPv4 header
-       (e.g. IPv4 destination address) and layer 4 headers (e.g. TCP
-       destination port).  An acl of type ipv4-acl does not contain
-       matches on fields in the ethernet header or the IPv6 header.";
+       "ACL that can match on fields from the IPv4 header (e.g. IPv4
+       destination address) and layer 4 headers (e.g. TCP destination
+       port). Matching on L2 headers or L3 headers other than IPv4 is
+       not possible.";
   }
 
   identity ipv6-acl {
     base acl:acl-base;
     description
-      "ACL that primarily matches on fields from the IPv6 header
-       (e.g. IPv6 destination address) and layer 4 headers (e.g. TCP
-       destination port). An acl of type ipv6-acl does not contain
-       matches on fields in the ethernet header or the IPv4 header.";
+      "ACL that can match on fields from the IPv6 header (e.g. IPv6
+      destination address) and layer 4 headers (e.g. TCP destination
+      port). Matching on L2 headers or L3 headers other than IPv6 is not
+      possible.";
+  }
+
+  identity ipv4v6-acl {
+    base acl:acl-base;
+    description
+      "ACL that can match on fields from an IPv4 or IPv6 header (e.g.
+      IPv4 destination address or IPv6 destination address) and layer 4
+      headers (e.g. TCP destination port). Matching on L2 headers is not
+      possible.";
   }
 
   identity eth-acl {
     base acl:acl-base;
     description
-      "ACL that primarily matches on fields in the ethernet header,
-       like 10/100/1000baseT or WiFi Access Control List. An acl of
-       type eth-acl does not contain matches on fields in the IPv4
-       header, IPv6 header or layer 4 headers.";
+      "ACL that can match on fields in the Ethernet header. Matching on
+      L3 or L4 headers is not possible.";
   }
 
-  identity mixed-l2-l3-ipv4-acl {
+  identity eth-ipv4-acl {
     base "acl:acl-base";
-
     description
-      "ACL that contains a mix of entries that
-       primarily match on fields in ethernet headers,
-       entries that primarily match on IPv4 headers.
-       Matching on layer 4 header fields may also exist in the
-       list.";
+      "ACL that can match on fields in the Ethernet header, IPv4 header
+      and in L4 headers. Matching on L2 headers other than Ethernet
+      or matching on L3 headers other than IPv4 is not possible.";
   }
 
-  identity mixed-l2-l3-ipv6-acl {
+  identity eth-ipv6-acl {
     base "acl:acl-base";
-
     description
-      "ACL that contains a mix of entries that
-       primarily match on fields in ethernet headers, entries
-       that primarily match on fields in IPv6 headers. Matching on
-       layer 4 header fields may also exist in the list.";
+      "ACL that can match on fields in the Ethernet header, IPv6 header
+      and in L4 headers. Matching on L2 headers other than Ethernet
+      or matching on L3 headers other than IPv6 is not possible.";
   }
 
-  identity mixed-l2-l3-ipv4-ipv6-acl {
+  identity eth-ipv4v6-acl {
     base "acl:acl-base";
-
     description
-      "ACL that contains a mix of entries that
-       primarily match on fields in ethernet headers, entries
-       that primarily match on fields in IPv4 headers, and entries
-       that primarily match on fields in IPv6 headers. Matching on
-       layer 4 header fields may also exist in the list.";
+      "ACL that can match on fields in the Ethernet header, from an IPv4
+      or IPv6 header and layer 4 headers.";
   }
 
   identity any-acl {
     base "acl:acl-base";
-
     description
       "ACL that can contain any pattern to match upon";
   }
@@ -183,49 +180,55 @@ module ietf-access-control-list {
   /*
    * Features
    */
-  feature l2-acl {
+
+  feature eth-acl {
     description
-      "Layer 2 ACL supported";
+      "ACL matching on Layer 2 Ethernet supported";
   }
 
   feature ipv4-acl {
     description
-      "Layer 3 IPv4 ACL supported";
+      "ACL matching on Layer 3 IPv4 supported";
   }
 
   feature ipv6-acl {
     description
-      "Layer 3 IPv6 ACL supported";
+      "ACL matching on Layer 3 IPv6 supported";
   }
 
-  feature mixed-ipv4-acl {
+  feature ipv4v6-acl {
     description
-      "Layer 2 and Layer 3 IPv4 ACL supported";
+      "ACL matching on Layer 3 IPv4 and IPv6 supported";
   }
 
-  feature mixed-ipv6-acl {
+  feature eth-ipv4-acl {
     description
-      "Layer 2 and Layer 3 IPv6 ACL supported";
+      "ACL matching on Layer 2 Ethernet and Layer 3 IPv4 supported";
   }
 
-  feature l2-l3-ipv4-ipv6-acl {
+  feature eth-ipv6-acl {
     description
-      "Layer 2 and any Layer 3 ACL supported.";
+      "ACL matching on Layer 2 Ethernet and Layer 3 IPv6 supported";
   }
 
-  feature tcp-acl {
+  feature eth-ipv4v6-acl {
     description
-      "TCP header ACL supported.";
+      "ACL matching on Layer 2 Ethernet and Layer 3 IPv4 and IPv6 supported";
   }
 
-  feature udp-acl {
+  feature tcp-fields {
     description
-      "UDP header ACL supported.";
+      "TCP header matching supported.";
   }
 
-  feature icmp-acl {
+  feature udp-fields {
     description
-      "ICMP header ACL supported.";
+      "UDP header matching supported.";
+  }
+
+  feature icmp-fields {
+    description
+      "ICMP header matching supported.";
   }
 
   feature any-acl {
@@ -427,14 +430,6 @@ module ietf-access-control-list {
                The rules are selected based on the feature set
                defined by the server and the acl-type defined.";
 
-            container l2-acl {
-              if-feature l2-acl;
-              must "derived-from(../../../../acl-type, 'acl:eth-acl')";
-              uses packet-fields:acl-eth-header-fields;
-              description
-                "Rule set for L2 ACL.";
-            }
-
             container ipv4-acl {
               if-feature ipv4-acl;
               must "derived-from(../../../../acl-type, " +
@@ -455,10 +450,27 @@ module ietf-access-control-list {
                 "Rule set that supports IPv6 headers.";
             }
 
-            container l2-l3-ipv4-acl {
-              if-feature mixed-ipv4-acl;
-              must "derived-from(../../../../acl-type, " +
-                "'acl:mixed-l2-l3-ipv4-acl')";
+            container ipv4v6-acl {
+              if-feature ipv4v6-acl;
+              must "../../../../acl-type = 'ipv4v6-acl'";
+              uses packet-fields:acl-ip-header-fields;
+              uses packet-fields:acl-ipv4-header-fields;
+              uses packet-fields:acl-ipv6-header-fields;
+              description
+                "Rule set that is a logical OR (||) of IPv4 and IPv6 headers.";
+            }
+
+            container eth-acl {
+              if-feature eth-acl;
+              must "../../../../acl-type = 'eth-acl'";
+              uses packet-fields:acl-eth-header-fields;
+              description
+                "Rule set for L2 Ethernet ACL.";
+            }
+
+            container eth-ipv4-acl {
+              if-feature eth-ipv4-acl;
+              must "../../../../acl-type = 'eth-ipv4-acl'";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -467,10 +479,9 @@ module ietf-access-control-list {
                  and ipv4 headers.";
             }
 
-            container l2-l3-ipv6-acl {
-              if-feature mixed-ipv6-acl;
-              must "derived-from(../../../../acl-type, " +
-                "'acl:mixed-l2-l3-ipv6-acl')";
+            container eth-ipv6-acl {
+              if-feature eth-ipv6-acl;
+              must "../../../../acl-type = 'eth-ipv6-acl'";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
@@ -479,10 +490,9 @@ module ietf-access-control-list {
                  && IPv6 headers.";
             }
 
-            container l2-l3-ipv4-ipv6-acl {
-              if-feature l2-l3-ipv4-ipv6-acl;
-              must "derived-from(../../../../acl-type, " +
-                "'acl:mixed-l2-l3-ipv4-ipv6-acl')";
+            container eth-ipv4v6-acl {
+              if-feature eth-ipv4v6-acl;
+              must "../../../../acl-type = 'eth-ipv4v6-acl'";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -493,21 +503,21 @@ module ietf-access-control-list {
             }
 
             container tcp-acl {
-              if-feature tcp-acl;
+              if-feature tcp-fields;
               uses packet-fields:acl-tcp-header-fields;
               description
                 "Rule set that defines TCP headers.";
             }
 
             container udp-acl {
-              if-feature udp-acl;
+              if-feature udp-fields;
               uses packet-fields:acl-udp-header-fields;
               description
                 "Rule set that defines UDP headers.";
             }
 
             container icmp-acl {
-              if-feature icmp-acl;
+              if-feature icmp-fields;
               uses packet-fields:acl-icmp-header-fields;
               description
                 "Rule set that defines ICMP headers.";
