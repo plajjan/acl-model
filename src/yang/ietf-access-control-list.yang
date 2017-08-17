@@ -7,10 +7,10 @@ module ietf-access-control-list {
   import ietf-packet-fields {
     prefix packet-fields;
   }
-  organization 
+  organization
     "IETF NETMOD (NETCONF Data Modeling Language)
      Working Group";
-  
+
   contact
     "WG Web: http://tools.ietf.org/wg/netmod/
     WG List: netmod@ietf.org
@@ -22,7 +22,7 @@ module ietf-access-control-list {
     lyihuang16@gmail.com
     Editor: Sonal Agarwal
     agarwaso@cisco.com";
-  
+
   description
     "This YANG module defines a component that describing the
     configuration of Access Control Lists (ACLs).
@@ -36,7 +36,7 @@ module ietf-access-control-list {
     (http://trustee.ietf.org/license-info).
     This version of this YANG module is part of RFC XXXX; see
     the RFC itself for full legal notices.";
-  
+
   revision YYYY-MM-DD {
     description
       "Added feature and identity statements for different types
@@ -46,7 +46,7 @@ module ietf-access-control-list {
     reference
       "RFC XXX: Network Access Control List (ACL) YANG Data Model.";
   }
-  
+
   revision 2016-10-12 {
     description
       "Base model for Network Access Control List (ACL).";
@@ -54,7 +54,7 @@ module ietf-access-control-list {
       "RFC XXXX: Network Access Control List (ACL)
       YANG Data  Model";
   }
-  
+
   /*
    * Identities
    */
@@ -100,8 +100,8 @@ module ietf-access-control-list {
 
   identity eth-ipv4-acl {
     base "acl:acl-base";
-     
-    description 
+
+    description
       "ACL that can match on fields in the Ethernet header, IPv4 header
       and in L4 headers. Matching on L2 headers other than Ethernet
       or matching on L3 headers other than IPv4 is not possible.";
@@ -109,8 +109,8 @@ module ietf-access-control-list {
 
   identity eth-ipv6-acl {
     base "acl:acl-base";
-     
-    description 
+
+    description
       "ACL that can match on fields in the Ethernet header, IPv6 header
       and in L4 headers. Matching on L2 headers other than Ethernet
       or matching on L3 headers other than IPv6 is not possible.";
@@ -118,27 +118,27 @@ module ietf-access-control-list {
 
   identity eth-ipv46-acl {
     base "acl:acl-base";
-     
-    description 
+
+    description
       "ACL that can match on fields in the Ethernet header, from an IPv4
       or IPv6 header and layer 4 headers.";
   }
-  
+
   identity tcp-fields {
     base "acl:acl-base";
   }
-  
+
   identity udp-fields {
     base "acl:acl-base";
   }
-  
+
   identity icmp-fields {
     base "acl:acl-base";
   }
-  
+
   identity any-acl {
 	base "acl:acl-base";
-	  
+
     description
 	  "ACL that can contain any pattern to match upon";
   }
@@ -152,10 +152,10 @@ module ietf-access-control-list {
    }
 
    feature ipv4-acl {
-     description 
+     description
        "ACL matching on Layer 3 IPv4 supported";
    }
-	
+
    feature ipv6-acl {
      description
        "ACL matching on Layer 3 IPv6 supported";
@@ -165,37 +165,37 @@ module ietf-access-control-list {
      description
        "ACL matching on Layer 3 IPv4 and IPv6 supported";
    }
-	
+
    feature eth-ipv4-acl {
      description
        "ACL matching on Layer 2 Ethernet and Layer 3 IPv4 supported";
    }
-	
+
    feature eth-ipv6-acl {
      description
        "ACL matching on Layer 2 Ethernet and Layer 3 IPv6 supported";
    }
-	
+
    feature eth-ipv46-acl {
      description
        "ACL matching on Layer 2 Ethernet and Layer 3 IPv4 and IPv6 supported";
    }
-   
+
    feature tcp-fields {
      description
        "TCP header matching supported.";
    }
-   
+
    feature udp-fields {
      description
        "UDP header matching supported.";
    }
-   
+
    feature icmp-fields {
      description
        "ICMP header matching supported.";
    }
-   
+
    feature any-acl {
 	 description
 	   "ACL for any pattern.";
@@ -277,9 +277,9 @@ module ietf-access-control-list {
 
           container matches {
             description
-              "The rules in this set determine what fields will be 
-               matched upon before any action is taken on them. 
-               The rules are selected based on the feature set 
+              "The rules in this set determine what fields will be
+               matched upon before any action is taken on them.
+               The rules are selected based on the feature set
                defined by the server and the acl-type defined.";
 
             container ipv4-acl {
@@ -309,7 +309,7 @@ module ietf-access-control-list {
               description
                 "Rule set that is a logical OR (||) of IPv4 and IPv6 headers.";
             }
-            
+
             container eth-acl {
               if-feature eth-acl;
               must "../../../../acl-type = 'eth-acl'";
@@ -351,28 +351,28 @@ module ietf-access-control-list {
                 "Rule set that is a logical AND (&&) of L2 Ethernet &&
                  (IPv4 || IPv6) headers.";
             }
-            
+
             container tcp-fields {
               if-feature tcp-fields;
               uses packet-fields:acl-tcp-header-fields;
               description
                 "Rule set that defines TCP headers.";
             }
-            
+
             container udp-fields {
               if-feature udp-fields;
               uses packet-fields:acl-udp-header-fields;
               description
                 "Rule set that defines UDP headers.";
             }
-            
+
             container icmp-fields {
               if-feature icmp-fields;
               uses packet-fields:acl-icmp-header-fields;
               description
                 "Rule set that defines ICMP headers.";
             }
-             
+
             container any-acl {
               if-feature any-acl;
               must "../../../../acl-type = 'any-acl'";
