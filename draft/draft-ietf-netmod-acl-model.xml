@@ -14,18 +14,10 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <?rfc compact="yes"?>
 <!-- This defines the specific filename and version number of your draft (and inserts the appropriate IETF boilerplate -->
-<rfc category="std" docName="draft-ietf-netmod-acl-model-11" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-netmod-acl-model-12" ipr="trust200902">
   <front>
     <title abbrev="ACL YANG model">Network Access Control List (ACL) YANG Data
     Model</title>
-
-    <author fullname="Dean Bogdanovic" initials="D." surname="Bogdanovic">
-      <organization>Volta Networks</organization>
-
-      <address>
-        <email>ivandean@gmail.com</email>
-      </address>
-    </author>
 
     <author fullname="Mahesh Jethanandani" initials="M."
             surname="Jethanandani">
@@ -78,7 +70,7 @@
       </address>
     </author>
 
-    <date day="15" month="June" year="2017"/>
+    <date day="15" month="August" year="2017"/>
 
     <area>Operations and Management Area</area>
 
@@ -99,20 +91,21 @@
       progress. Please apply the following replacements</t>
 
       <t><list style="symbols">
-          <t>"XXXX" --&gt; the assigned RFC value for this draft.</t>
+          <t>"XXXX" --&gt; the assigned RFC value for this draft both in this
+          draft and in the YANG models under the revision statement.</t>
 
-          <t>Revision date in model (Oct 12, 2016) needs to get updated with
-          the date the draft gets approved. The date also needs to get
-          reflected on the line with &lt;CODE BEGINS&gt;.</t>
+          <t>Revision date in model needs to get updated with the date the
+          draft gets approved. The date also needs to get reflected on the
+          line with &lt;CODE BEGINS&gt;.</t>
         </list></t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="intro" title="Introduction">
-      <t>Access Control List (ACL) is one of the basic elements to configure
-      device forwarding behavior. It is used in many networking concepts such
-      as Policy Based Routing, Firewalls etc.</t>
+      <t>Access Control List (ACL) is one of the basic elements used to
+      configure device forwarding behavior. It is used in many networking
+      technologies such as Policy Based Routing, Firewalls etc.</t>
 
       <t>An ACL is an ordered set of rules that is used to filter traffic on a
       networking device. Each rule is represented by an Access Control Entry
@@ -136,7 +129,7 @@
       <t>The actions specify what to do with the packet when the matching
       criteria is met. These actions are any operations that would apply to
       the packet, such as counting, policing, or simply forwarding.The list of
-      potential actions is endless depending on the innovations of the
+      potential actions is endless depending on the capabilities of the
       networked devices.</t>
 
       <t>Access Control List is also widely knowns as ACL (pronounce as [ak-uh
@@ -311,35 +304,9 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
 
         <figure>
           <artwork><![CDATA[
-<?xml version='1.0' encoding='UTF-8'?>
-  <data xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-    <access-lists xmlns="urn:ietf:params:xml:ns:yang:
-     ietf-access-control-list">
-      <acl>
-        <acl-name>sample-ipv4-acl</acl-name>
-        <acl-type>ipv4</acl-type>
-        <access-list-entries>
-          <ace>
-            <rule-name>rule1</rule-name>
-            <matches>
-              <source-ipv4-network>
-                10.10.10.1/24
-              </source-ipv4-network>
-              <destination-ipv4-network>
-                11.11.11.1/24
-              </destination-ipv4-network>
-            </matches>
-            <actions>
-              <deny />
-            </actions>
-            <protocol>
-             tcp
-            </protocol>
-          </ace>
-        </access-list-entries>
-      </acl>
-    </access-lists>
-  </data>  ]]></artwork>
+INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
+
+]]></artwork>
         </figure>
 
         <t>The acl and aces can be described in CLI as the following:</t>
@@ -396,6 +363,19 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
         </figure>
 
         <t>This represents port 21.</t>
+
+        <t>With the following XML snippet, the configuration is specifying all
+        ports that are not equal to 21.</t>
+
+        <figure>
+          <artwork><![CDATA[
+      <source-port-range>
+        <lower-port>21</lower-port>
+        <operations>neq</operations>
+      </source-port-range>
+
+]]></artwork>
+        </figure>
       </section>
     </section>
 
@@ -460,11 +440,11 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
       the draft went into IETF charter.</t>
 
       <t>Dean Bogdanovic, Kiran Agrahara Sreenivasa, Lisa Huang, and Dana
-      Blair each evaluated the YANG model in previous draft separately and
-      then work together, to created a new ACL draft that can be supported by
-      different vendors. The new draft removes vendor specific features, and
-      gives examples to allow vendors to extend in their own proprietary ACL.
-      The earlier draft was superseded with the new one that received more
+      Blair each evaluated the YANG model in previous drafts separately, and
+      then worked together to created a ACL draft that was supported by
+      different vendors. That draft removed vendor specific features, and gave
+      examples to allow vendors to extend in their own proprietary ACL. The
+      earlier draft was superseded with this updated draft and received more
       participation from many vendors.</t>
 
       <t>Authors would like to thank Jason Sterne, Lada Lhotka, Juergen
@@ -483,9 +463,6 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
           <t>The model defines 'ether-type' node as a string. Ideally, this
           should be a well defined list of all Ethernet Types assigned by
           IEEE.</t>
-
-          <t>Should this draft include route-policy definition as defined in
-          draft-ietf-rtgwg-policy-model?</t>
         </list></t>
     </section>
 
@@ -529,100 +506,14 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-packet-fields@YYYY-MM-DD.yang)
 
         <figure>
           <artwork><![CDATA[
-module: example-ext-route-filter
-augment /ietf-acl:access-lists/ietf-acl:acl/
-ietf-acl:access-list-entries/ietf-acl:ace/ietf-acl:matches:
-   +--rw (route-prefix)?
-      +--:(range)
-         +--rw (ipv4-range)?
-         |  +--:(v4-lower-bound)
-         |  |  +--rw v4-lower-bound?   inet:ipv4-prefix
-         |  +--:(v4-upper-bound)
-         |     +--rw v4-upper-bound?   inet:ipv4-prefix
-         +--rw (ipv6-range)?
-            +--:(v6-lower-bound)
-            |  +--rw v6-lower-bound?   inet:ipv6-prefix
-            +--:(v6-upper-bound)
-               +--rw v6-upper-bound?   inet:ipv6-prefix	  
+INSERT_TEXT_FROM_FILE(../src/yang/example-ext-route-filter@YYYY-MM-DD-tree.txt)
 	  ]]></artwork>
         </figure>
 
         <figure>
           <artwork><![CDATA[
-file "example-ext-route-filter@2016-10-12.yang"
-module example-ext-route-filter {
-  namespace "urn:ietf:params:xml:ns:yang:example-ext-route-filter";
-  prefix example-ext-route-filter;
-  import ietf-inet-types {
-    prefix "inet";
-  }
-  import ietf-access-control-list {
-    prefix "ietf-acl";
-  }
-
-  organization 
-    "Route model group.";
-
-  contact 
-    "abc@abc.com";
-
-  description "
-    This module describes route filter as a collection of
-    match prefixes. When specifying a match prefix, you
-    can specify an exact match with a particular route or
-    a less precise match. You can configure either a
-    common action that applies to the entire list or an
-    action associated with each prefix.
-    ";
-  revision 2016-10-12 {
-    description 
-      "Creating Route-Filter extension model based on 
-      ietf-access-control-list model";
-    reference " ";
-  }
-  augment "/ietf-acl:access-lists/ietf-acl:acl/"
-    + "ietf-acl:access-list-entries/ietf-acl:ace/ietf-acl:matches"{
-    description "
-      This module augments the matches container in the ietf-acl
-      module with route filter specific actions
-      ";
-    choice route-prefix{
-      description "Define route filter match criteria";
-      case range {
-        description 
-          "Route falls between the lower prefix/prefix-length 
-          and the upperprefix/prefix-length.";
-        choice ipv4-range {
-          description "Defines the IPv4 prefix range";
-          leaf v4-lower-bound {
-            type inet:ipv4-prefix;
-            description 
-              "Defines the lower IPv4 prefix/prefix length";
-          }
-          leaf v4-upper-bound {
-            type inet:ipv4-prefix;
-            description 
-              "Defines the upper IPv4 prefix/prefix length";
-          }
-        }
-        choice ipv6-range {
-          description "Defines the IPv6 prefix/prefix range";
-          leaf v6-lower-bound {
-            type inet:ipv6-prefix;
-            description 
-              "Defines the lower IPv6 prefix/prefix length";
-          }
-          leaf v6-upper-bound {
-            type inet:ipv6-prefix;
-            description 
-              "Defines the upper IPv6 prefix/prefix length";
-          }
-        }
-      }
-    }
-  }
-}
-
+file "example-ext-route-filter@YYYY-MM-DD.yang"
+INSERT_TEXT_FROM_FILE(../src/yang/example-ext-route-filter@YYYY-MM-DD.yang)
         ]]></artwork>
         </figure>
       </section>
@@ -652,77 +543,24 @@ module example-ext-route-filter {
 
         <t>The following figure is the tree structure of example-newco-acl. In
         this example,
-        /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:access-list-entries/
-        ietf-acl:ace/ietf-acl:matches are augmented with two new choices,
-        protocol-payload-choice and metadata. The protocol-payload-choice uses
-        a grouping with an enumeration of all supported protocol values.
-        Metadata matches apply to fields associated with the packet but not in
-        the packet header such as input interface or overall packet length. In
-        other example,
-        /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:access-list-entries/
-        ietf-acl:ace/ietf-acl:actions are augmented with new choice of
-        actions.</t>
+        /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:aces/ietf-acl:ace/ietf-acl:matches
+        are augmented with two new choices, protocol-payload-choice and
+        metadata. The protocol-payload-choice uses a grouping with an
+        enumeration of all supported protocol values. Metadata matches apply
+        to fields associated with the packet but not in the packet header such
+        as input interface or overall packet length. In other example,
+        /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:aces/ietf-acl:ace/ietf-acl:actions
+        are augmented with new choice of actions.</t>
 
         <figure>
           <artwork><![CDATA[
-module: example-newco-acl
-augment /ietf-acl:access-lists/ietf-acl:acl/
-ietf-acl:access-list-entries/ietf-acl:ace/ietf-acl:matches:
-   +--rw vlan-tagged?      uint16
-   +--rw mpls-unicast?     uint16
-   +--rw mpls-multicast?   uint16
-   +--rw ipv4?             uint16
-   +--rw ipv6?             uint16
-augment /ietf-acl:access-lists/ietf-acl:acl/
-ietf-acl:access-list-entries/ietf-acl:ace/ietf-acl:matches:
-   +--rw ipv4-ttl?      uint8
-   +--rw ipv4-len?      uint16
-   +--rw ipv4-ihl?      uint8
-   +--rw ipv4-id?       uint16
-   +--rw ipv4-flags?    ipv4-flags-type
-   +--rw ipv4-offset?   uint16
-augment /ietf-acl:access-lists/ietf-acl:acl/
-ietf-acl:access-list-entries/ietf-acl:ace/ietf-acl:matches:
-   +--rw (protocol-payload-choice)?
-   |  +--:(protocol-payload)
-   |     +--rw protocol-payload* [value-keyword]
-   |        +--rw value-keyword    enumeration
-   +--rw (metadata)?
-      +--:(interface-name)
-         +--rw interface-name* [input-interface]
-            +--rw input-interface    ietf-if:interface-ref
-augment /ietf-acl:access-lists/ietf-acl:acl/
-ietf-acl:access-list-entries/ietf-acl:ace/ietf-acl:actions:
-   +--rw (action)?
-      +--:(count)
-      |  +--rw count?                   string
-      +--:(policer)
-      |  +--rw policer?                 string
-      +--:(hiearchical-policer)
-         +--rw hierarchitacl-policer?   string
-augment /ietf-acl:access-lists/ietf-acl:acl:
-   +--rw default-actions
-      +--rw deny?   empty
-augment /ietf-if:interfaces/ietf-if:interface:
-   +--rw acl
-      +--rw acl-name?        ietf-acl:access-control-list-ref
-      +--ro match-counter?   yang:counter64
-      +--rw (direction)?
-         +--:(in)
-         |  +--rw in?              empty
-         +--:(out)
-            +--rw out?             empty
-augment /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:acl-oper-data:
-   +--ro targets
-      +--ro (interface)?
-         +--:(interface-name)
-            +--ro interface-name*   ietf-if:interface-ref
+INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl@YYYY-MM-DD-tree.txt)  
           ]]></artwork>
         </figure>
 
         <figure>
           <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl.yang)  
+INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl@YYYY-MM-DD.yang)  
 
 ]]></artwork>
         </figure>
@@ -730,43 +568,6 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl.yang)
         <t>Draft authors expect that different vendors will provide their own
         yang models as in the example above, which is the augmentation of the
         base model</t>
-      </section>
-
-      <!--newcoacl-->
-
-      <!--mixedtypeacl-->
-
-      <section anchor="mixedtypeacl"
-               title="Example to augment model with mixed ACL type">
-        <t>As vendors (or IETF) add more features to ACL, the model is easily
-        augmented. One of such augmentations can be to add support for mixed
-        type of ACLs, where acl-type-base can be augmented like in example
-        below:</t>
-
-        <figure>
-          <artwork><![CDATA[
-	    identity mixed-l3-acl {
-	      base "access-control-list:acl-type-base";
-	      description "ACL that contains a mix of entries that
-	      primarily match on fields in IPv4 headers and entries
-	      that primarily match on fields in IPv6 headers.
-       Matching on layer 4 header fields may also exist in the
-	      list. An acl of type mixed-l3-acl does not contain
-	      matches on fields in the ethernet header.";
-	    }
-	    
-	    identity mixed-l2-l3-acl {
-	      base "access-control-list:acl-type-base";
-	      description "ACL that contains a mix of entries that
-	      primarily match on fields in ethernet headers, entries
-	      that primarily match on fields in IPv4 headers, 
-       and entries that primarily match on fields in IPv6 
-       headers. Matching on layer 4 header fields may also 
-       exist in the list.";
-	    }	  
-	    
-	  ]]></artwork>
-        </figure>
       </section>
 
       <section title="Linux nftables">
@@ -803,15 +604,13 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl.yang)
         }
       }
 
-    ]]></artwork>
+]]></artwork>
         </figure>
 
         <t>We can see that there are many similarities between Linux nftables
         and IETF ACL YANG data models and its extension models. It should be
         fairly easy to do translation between ACL YANG model described in this
         draft and Linux nftables.</t>
-
-        <t/>
       </section>
     </section>
   </back>

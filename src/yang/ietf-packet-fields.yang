@@ -53,13 +53,42 @@ module ietf-packet-fields {
       "RFC XXX: Network Access Control List (ACL) YANG Data Model.";
   }
   
-  revision 2016-10-12 {
+  /*
+   * Typedefs
+   */
+  typedef operator {
+    type enumeration {
+      enum lt {
+        description
+          "Less than.";
+      }
+      enum lte {
+        description
+          "Less than or equal.";
+      }
+      enum gt {
+        description
+          "Greater than.";
+      }
+      enum gte {
+        description
+          "Greater than or equal.";
+      }
+      enum eq {
+        description
+          "Equal to.";
+      }
+      enum neq {
+        description
+          "Not equal to.";
+      }
+    }
     description
-      "Initial version of packet fields used by
-       ietf-access-control-list";
-    reference
-      "RFC XXXX: Network Access Control List (ACL)
-       YANG Data  Model";
+      "The source and destination port range definitions
+       can be further qualified using an operator. An
+       operator is needed only if lower-port is specified
+       and upper-port is not specified. The operator
+       therefore further qualifies lower-port only.";
   }
   
   grouping acl-transport-header-fields {
@@ -69,7 +98,12 @@ module ietf-packet-fields {
       presence "Enables setting source port range";
       description
         "Inclusive range representing source ports to be used.
-         When only lower-port is present, it represents a single port.";
+    	 When only lower-port is present, it represents a single 
+         port and eq operator is assumed to be default.
+          
+         When both lower-port and upper-port are specified,
+         it implies a range inclusive of both values.";
+      
       leaf lower-port {
         type inet:port-number;
         mandatory true;
@@ -84,8 +118,22 @@ module ietf-packet-fields {
            to lower-port";
         }
         description
-          "Upper boundary for port . If existing, the upper port
+          "Upper boundary for port. If it exists, the upper port
            must be greater or equal to lower-port.";
+      }
+      leaf operation {
+        type operator;
+        must "(lower-port and not(upper-port))" {
+          error-message
+            "If lower-port is specified, and an operator is also
+             specified, then upper-port should not be specified.";
+          description
+            "If lower-port is specified, and an operator is also
+             specified, then upper-port should not be specified.";
+        }
+        default eq;
+        description
+          "Operator to be applied on the lower-port.";
       }
     }
     
@@ -94,13 +142,15 @@ module ietf-packet-fields {
       description
         "Inclusive range representing destination ports to be used. 
          When only lower-port is present, it represents a single 
-         port.";
+         port and eq operator is assumed to be default.
+         
+         When both lower-port and upper-port are specified,
+         it implies a range inclusive of both values ";
       
       leaf lower-port {
         type inet:port-number;
         mandatory true;
         description
-
           "Lower boundary for port.";
       }
       leaf upper-port {
@@ -110,10 +160,23 @@ module ietf-packet-fields {
             "The upper-port must be greater than or equal 
              to lower-port";
         }
-
         description
           "Upper boundary for port. If existing, the upper port must
           be greater or equal to lower-port";
+      }
+      leaf opearations {
+        type operator;
+        must "(lower-port and not(upper-port))" {
+          error-message
+            "If lower-port is specified, and an operator is also
+             specified, then upper-port should not be specified.";
+          description
+            "If lower-port is specified, and an operator is also
+             specified, then upper-port should not be specified.";
+        }
+        default eq;
+        description
+          "Operator to be applied on the lower-port.";
       }
     }
   }
@@ -124,14 +187,26 @@ module ietf-packet-fields {
     reference
       "RFC 791.";
     
-    leaf tos {
+    leaf dscp {
+      type uint8 {
+        range 0..63;
+      }
       description
-        "Also known as Traffic Class in IPv6. The Type of Service (TOS)
-         provides an indication of the abstract parameters of the 
-         quality of service desired.";
+        "Also known as Traffic Class in IPv6. The Diffrentiated
+         Services Code Point (DSCP) provides an indication of 
+         the abstract parameters of the quality of service desired.";
       reference
-        "RFC 719, RFC 2460";
-      type uint8;
+        "RFC 2474.";
+    }
+    
+    leaf ecn {
+      type uint8 {
+        range 0..3;
+      }
+      description
+        "Explicit Congestion Notification.";
+      reference
+        "RFC 3168.";
     }
     
     leaf length {
@@ -149,6 +224,7 @@ module ietf-packet-fields {
     }
 
     leaf ttl {
+      type uint8;
       description
         "This field indicates the maximum time the datagram is allowed 
          to remain in the internet system.  If this field contains the 
@@ -156,7 +232,6 @@ module ietf-packet-fields {
     	  
          In IPv6, this field is known as the Hop Limit.";
       reference "RFC 719, RFC 2460";
-      type uint8;
     }
     
     leaf protocol {
@@ -172,53 +247,55 @@ module ietf-packet-fields {
       "Fields in IPv4 header.";
     
     leaf ihl {
+      type uint8 {
+        range "5..60";
+      }
       description
         "An IPv4 header field, the Internet Header Length (IHL) is 
     	 the length of the internet header in 32 bit words, and 
          thus points to the beginning of the data. Note that the 
          minimum value for a correct header is 5.";
-      type uint8 {
-        range "5..60";
-      }
     }
     
     leaf flags {
       type bits {
         bit reserved {
+          position 0;
           description
             "Reserved. Must be zero.";
-          position 0;
         }
         bit fragment {
+          position 1;
           description
             "Setting value to 0 indicates may fragment, while setting
              the value to 1 indicates do not fragment.";
-          position 1;
         }
         bit more {
+          position 2;
           description
             "Setting the value to 0 indicates this is the last fragment,
              and setting the value to 1 indicates more fragments are 
              coming.";
-          position 2;
         }
       }
+      description
+        "Bit definitions for the flags field in IPv4 header.";
     }
     
     leaf offset {
-      description
-        "The fragment offset is measured in units of 8 octets (64 bits).  
-         The first fragment has offset zero. The length is 13 bits";
       type uint16 {
         range "20..65535";
       }
+      description
+        "The fragment offset is measured in units of 8 octets (64 bits).  
+         The first fragment has offset zero. The length is 13 bits";
     }
     
     leaf identification {
+      type uint16;
       description
         "An identifying value assigned by the sender to aid in 
          assembling the fragments of a datagram.";
-      type uint16;
     }
     
     leaf destination-ipv4-network {
@@ -238,26 +315,27 @@ module ietf-packet-fields {
       "Fields in IPv6 header";
     
     leaf next-header {
+      type uint8;
       description
         "Identifies the type of header immediately following the 
          IPv6 header. Uses the same values as the IPv4 Protocol 
          field.";
       reference
         "RFC 2460";
-      type uint8;
     }
     
     leaf destination-ipv6-network {
-
       type inet:ipv6-prefix;
       description
         "Destination IPv6 address prefix.";
     }
+    
     leaf source-ipv6-network {
       type inet:ipv6-prefix;
       description
         "Source IPv6 address prefix.";
     }
+    
     leaf flow-label {
       type inet:ipv6-flow-label;
       description
@@ -358,7 +436,73 @@ module ietf-packet-fields {
     }
 	
     leaf flags {
-      type uint16;
+      type bits {
+        bit ns {
+          position 0;
+          description
+            "ECN-nonce concealment protection";
+          reference "RFC 3540).";
+        }
+        bit cwr {
+          position 1;
+          description
+            "Congestion Window Reduced (CWR) flag is set by 
+             the sending host to indicate that it received 
+             a TCP segment with the ECE flag set and had 
+             responded in congestion control mechanism.";
+          reference "RFC 3168";
+        }
+        bit ece {
+          position 2;
+          description
+            "ECN-Echo has a dual role, depending on the value 
+             of the SYN flag. It indicates:
+             If the SYN flag is set (1), that the TCP peer is ECN 
+             capable. If the SYN flag is clear (0), that a packet 
+             with Congestion Experienced flag set (ECN=11) in IP 
+             header was received during normal transmission 
+             (added to header by RFC 3168). This serves as an 
+             indication of network congestion (or impending 
+             congestion) to the TCP sender.";
+        }
+        bit urg {
+          position 3;
+          description
+            "Indicates that the Urgent pointer field is significant.";
+        }
+        bit ack {
+          position 4;
+          description
+            "Indicates that the Acknowledgment field is significant. 
+             All packets after the initial SYN packet sent by the 
+             client should have this flag set.";
+        }
+        bit psh {
+          position 5;
+          description
+            "Push function. Asks to push the buffered data to the 
+             receiving application.";
+        }
+        bit rst {
+          position 6;
+          description
+            "Reset the connection.";
+        }
+        bit syn {
+          position 7;
+          description
+            "Synchronize sequence numbers. Only the first packet 
+             sent from each end should have this flag set. Some 
+             other flags and fields change meaning based on this 
+             flag, and some are only valid for when it is set, 
+             and others when it is clear.";
+        }
+        bit fin {
+          position 8;
+          description
+            "Last package from sender.";
+        }
+      }
       description
         "Also known as Control Bits. Contains 9 1-bit flags.";
     }
@@ -377,7 +521,7 @@ module ietf-packet-fields {
     leaf urgent-pointer {
       type uint16;
       description
-        "This field s an offset from the sequence number
+        "This field is an offset from the sequence number
          indicating the last urgent data byte.";
     }
 	

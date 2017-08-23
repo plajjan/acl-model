@@ -1,41 +1,51 @@
 module ietf-access-control-list {
   namespace "urn:ietf:params:xml:ns:yang:ietf-access-control-list";
   prefix acl;
+  
   import ietf-yang-types {
     prefix yang;
   }
+  
   import ietf-packet-fields {
     prefix packet-fields;
   }
+  
+  import ietf-interfaces {
+    prefix if;
+  }
+  
   organization 
     "IETF NETMOD (NETCONF Data Modeling Language)
      Working Group";
   
   contact
     "WG Web: http://tools.ietf.org/wg/netmod/
-    WG List: netmod@ietf.org
-    Editor: Dean Bogdanovic
-    ivandean@gmail.com
-    Editor: Mahesh Jethanandani
-    mahesh@cisco.com
-    Editor: Lisa Huang
-    lyihuang16@gmail.com
-    Editor: Sonal Agarwal
-    agarwaso@cisco.com";
+     WG List: netmod@ietf.org
+
+     Editor: Mahesh Jethanandani
+             mjethanandani@gmail.com
+     Editor: Lisa Huang
+             lyihuang16@gmail.com
+     Editor: Sonal Agarwal
+             agarwaso@cisco.com
+     Editor: Dana Blair
+             dblair@cisco.com";
   
   description
-    "This YANG module defines a component that describing the
-    configuration of Access Control Lists (ACLs).
-    Copyright (c) 2016 IETF Trust and the persons identified as
-    the document authors.  All rights reserved.
-    Redistribution and use in source and binary forms, with or
-    without modification, is permitted pursuant to, and subject
-    to the license terms contained in, the Simplified BSD
-    License set forth in Section 4.c of the IETF Trust's Legal
-    Provisions Relating to IETF Documents
-    (http://trustee.ietf.org/license-info).
-    This version of this YANG module is part of RFC XXXX; see
-    the RFC itself for full legal notices.";
+    "This YANG module defines a component that describe the
+     configuration of Access Control Lists (ACLs).
+	  
+     Copyright (c) 2016 IETF Trust and the persons identified as
+     the document authors.  All rights reserved.
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject
+     to the license terms contained in, the Simplified BSD
+     License set forth in Section 4.c of the IETF Trust's Legal
+     Provisions Relating to IETF Documents
+     (http://trustee.ietf.org/license-info).
+	  
+     This version of this YANG module is part of RFC XXXX; see
+     the RFC itself for full legal notices.";
   
   revision YYYY-MM-DD {
     description
@@ -45,14 +55,6 @@ module ietf-access-control-list {
        each container.";
     reference
       "RFC XXX: Network Access Control List (ACL) YANG Data Model.";
-  }
-  
-  revision 2016-10-12 {
-    description
-      "Base model for Network Access Control List (ACL).";
-    reference
-      "RFC XXXX: Network Access Control List (ACL)
-      YANG Data  Model";
   }
   
   /*
@@ -97,7 +99,7 @@ module ietf-access-control-list {
     description 
       "ACL that contains a mix of entries that
        primarily match on fields in ethernet headers,
-       entries that primarly match on IPv4 headers.
+       entries that primarily match on IPv4 headers.
        Matching on layer 4 header fields may also exist in the
        list.";
   }
@@ -123,77 +125,65 @@ module ietf-access-control-list {
        layer 4 header fields may also exist in the list.";
   }
   
-  identity tcp-acl {
-    base "acl:acl-base";
-  }
-  
-  identity udp-acl {
-    base "acl:acl-base";
-  }
-  
-  identity icmp-acl {
-    base "acl:acl-base";
-  }
-  
   identity any-acl {
-	base "acl:acl-base";
+    base "acl:acl-base";
 	  
     description
-	  "ACL that can contain any pattern to match upon";
+      "ACL that can contain any pattern to match upon";
   }
 
   /*
    * Features
    */
-   feature l2-acl {
-     description
-       "Layer 2 ACL supported";
-   }
+  feature l2-acl {
+    description
+      "Layer 2 ACL supported";
+  }
 
-   feature ipv4-acl {
-     description 
-       "Layer 3 IPv4 ACL supported";
-   }
+  feature ipv4-acl {
+    description 
+      "Layer 3 IPv4 ACL supported";
+  }
 	
-   feature ipv6-acl {
-     description
-       "Layer 3 IPv6 ACL supported";
-   }
+  feature ipv6-acl {
+    description
+      "Layer 3 IPv6 ACL supported";
+  }
 	
-   feature mixed-ipv4-acl {
-     description
-       "Layer 2 and Layer 3 IPv4 ACL supported";
-   }
+  feature mixed-ipv4-acl {
+    description
+      "Layer 2 and Layer 3 IPv4 ACL supported";
+  }
 	
-   feature mixed-ipv6-acl {
-     description
-       "Layer 2 and Layer 3 IPv6 ACL supported";
-   }
+  feature mixed-ipv6-acl {
+    description
+      "Layer 2 and Layer 3 IPv6 ACL supported";
+  }
 	
-   feature l2-l3-ipv4-ipv6-acl {
-     description
-       "Layer 2 and any Layer 3 ACL supported.";
-   }
+  feature l2-l3-ipv4-ipv6-acl {
+    description
+      "Layer 2 and any Layer 3 ACL supported.";
+  }
    
-   feature tcp-acl {
-     description
-       "TCP header ACL supported.";
-   }
+  feature tcp-acl {
+    description
+      "TCP header ACL supported.";
+  }
    
-   feature udp-acl {
-     description
-       "UDP header ACL supported.";
-   }
+  feature udp-acl {
+    description
+      "UDP header ACL supported.";
+  }
    
-   feature icmp-acl {
-     description
-       "ICMP header ACL supported.";
-   }
+  feature icmp-acl {
+    description
+      "ICMP header ACL supported.";
+  }
    
-   feature any-acl {
-	 description
-	   "ACL for any pattern.";
-   }
+  feature any-acl {
+    description
+     "ACL for any pattern.";
+  }
 
   /*
    * Typedefs
@@ -207,7 +197,7 @@ module ietf-access-control-list {
       (ACL) type";
   }
 
-  typedef access-control-list-ref {
+  typedef acl-ref {
     type leafref {
       path "/access-lists/acl/acl-name";
     }
@@ -245,15 +235,15 @@ module ietf-access-control-list {
         type acl-type;
         description
           "Type of access control list. Indicates the primary intended
-           type of match criteria (e.g. ethernet, IPv4, IPv6, mixed, etc)
-           used in the list instance.";
+           type of match criteria (e.g. ethernet, IPv4, IPv6, mixed, 
+           etc) used in the list instance.";
       }
       container acl-oper-data {
         config false;
         description
           "Overall Access Control List operational data";
       }
-      container access-list-entries {
+      container aces {
         description
           "The access-list-entries container contains
            a list of access-list-entries(ACE).";
@@ -287,7 +277,7 @@ module ietf-access-control-list {
             container ipv4-acl {
               if-feature ipv4-acl;
 	          must "../../../../acl-type = 'ipv4-acl'";
-	          uses packet-fields:acl-ip-header-fields;
+              uses packet-fields:acl-ip-header-fields;
 	          uses packet-fields:acl-ipv4-header-fields;
               description
                 "Rule set that supports IPv4 headers.";
@@ -306,8 +296,8 @@ module ietf-access-control-list {
               if-feature mixed-ipv4-acl;
               must "../../../../acl-type = 'mixed-l2-l3-ipv4-acl'";
               uses packet-fields:acl-eth-header-fields;
-	          uses packet-fields:acl-ip-header-fields;
-	          uses packet-fields:acl-ipv4-header-fields;
+              uses packet-fields:acl-ip-header-fields;
+              uses packet-fields:acl-ipv4-header-fields;
               description
                 "Rule set that is a logical AND (&&) of l2 
                  and ipv4 headers.";
@@ -364,6 +354,13 @@ module ietf-access-control-list {
               description
                 "Rule set that allows for a any ACL.";
             }
+            
+            leaf interface {
+              type if:interface-ref;
+              description
+                "Interface name that is specified to
+                 match upon.";
+            }
           }
 
           container actions {
@@ -391,8 +388,11 @@ module ietf-access-control-list {
             }
             leaf logging {
               type boolean;
+              default "false";
               description
-                "Log the rule on which the match occured.";
+                "Log the rule on which the match occurred.
+                 Setting the value to true enables logging,
+                 whereas setting the value to false disables it.";
             }
           }
           /*
