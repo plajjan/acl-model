@@ -40,10 +40,10 @@ clean:
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].xml[~]
+	-rm ../src/yang/*\@$(shell date +%Y)-*-*-tree.txt
+	-rm ../src/yang/*\@$(shell date +%Y)-*-*.yang
 ifeq (md,$(draft_type))
 	-rm -f $(draft).xml
-	rm ../src/yang/*-tree.txt
-	rm ../src/yang/ietf-*\@$(shell date +%Y-%m-%d).yang
 
 endif
 ifeq (org,$(draft_type))

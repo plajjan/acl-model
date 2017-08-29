@@ -35,7 +35,7 @@ module ietf-access-control-list {
     "This YANG module defines a component that describe the
      configuration of Access Control Lists (ACLs).
 	  
-     Copyright (c) 2016 IETF Trust and the persons identified as
+     Copyright (c) 2017 IETF Trust and the persons identified as
      the document authors.  All rights reserved.
      Redistribution and use in source and binary forms, with or
      without modification, is permitted pursuant to, and subject
