@@ -457,9 +457,6 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
           <t>The current model does not support the concept of "containers"
           used to contain multiple addresses per rule entry.</t>
 
-          <t>The current model defines 'any' rule as a presence container,
-          allowing a user to define any 'any' rule.</t>
-
           <t>The model defines 'ether-type' node as a string. Ideally, this
           should be a well defined list of all Ethernet Types assigned by
           IEEE.</t>
