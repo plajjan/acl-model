@@ -60,17 +60,9 @@ module ietf-packet-fields {
         description
           "Less than.";
       }
-      enum lte {
-        description
-          "Less than or equal.";
-      }
       enum gt {
         description
           "Greater than.";
-      }
-      enum gte {
-        description
-          "Greater than or equal.";
       }
       enum eq {
         description
@@ -191,6 +183,11 @@ module ietf-packet-fields {
     
     leaf dscp {
       type inet:dscp;
+      description
+        "Differentiated Services Code Point.";
+      reference
+        "RFC 2474: Definition of Differentiated services field
+         (DS field) in the IPv4 and IPv6 headers.";
     }
     
     leaf ecn {
