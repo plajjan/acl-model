@@ -9,6 +9,10 @@ module ietf-packet-fields {
   import ietf-yang-types {
     prefix yang;
   }
+  
+  import ietf-ethertypes {
+    prefix eth;
+  }
 
   organization 
     "IETF NETMOD (NETCONF Data Modeling Language) Working
@@ -115,7 +119,7 @@ module ietf-packet-fields {
       }
       leaf operation {
         type operator;
-        must "(lower-port and not(upper-port))" {
+        must "(../lower-port and not(../upper-port))" {
           error-message
             "If lower-port is specified, and an operator is also
              specified, then upper-port should not be specified.";
@@ -158,9 +162,9 @@ module ietf-packet-fields {
           "Upper boundary for port. If existing, the upper port must
           be greater or equal to lower-port";
       }
-      leaf opearations {
+      leaf operations {
         type operator;
-        must "(lower-port and not(upper-port))" {
+        must "(../lower-port and not(../upper-port))" {
           error-message
             "If lower-port is specified, and an operator is also
              specified, then upper-port should not be specified.";
@@ -363,24 +367,13 @@ module ietf-packet-fields {
       description
         "Source IEEE 802 MAC address mask.";
     }
-    leaf ether-type {
-      type string {
-        pattern '[0-9a-fA-F]{4}';
-      }
+    leaf ethertype {
+      type eth:ethertype;
       description
         "The Ethernet Type (or Length) value represented
          in the canonical order defined by IEEE 802. 
          The canonical representation uses lowercase 
-         characters.
-    		
-    	 Note: This is not the most ideal way to define 
-         ether-types. Ether-types are well known types 
-         and are registered with RAC in IEEE. So they 
-         should well defined types with values. For now 
-         this model is defining it as a string. 
-    	 There is a note out to IEEE that needs to be
-    	 turned into a liaison statement asking them to
-    	 define all ether-types for the industry to use.";
+         characters.";
       reference
         "IEEE 802-2014 Clause 9.2";
     }

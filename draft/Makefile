@@ -20,7 +20,7 @@ draft_type := $(suffix $(firstword $(wildcard $(draft).md $(draft).org $(draft).
 
 current_ver := $(shell git tag | grep '$(draft)-[0-9][0-9]' | tail -1 | sed -e"s/.*-//")
 ifeq "${current_ver}" ""
-next_ver ?= 12
+next_ver ?= 14
 else
 next_ver ?= $(shell printf "%.2d" $$((1$(current_ver)-99)))
 endif
@@ -50,12 +50,13 @@ ifeq (org,$(draft_type))
 	-rm -f $(draft).xml
 endif
 
-$(next).xml: $(draft).xml ../src/yang/ietf-access-control-list.yang ../src/yang/ietf-packet-fields.yang ../src/yang/example-ext-route-filter.yang ../src/yang/example-newco-acl.yang
+$(next).xml: $(draft).xml ../src/yang/ietf-access-control-list.yang ../src/yang/ietf-packet-fields.yang ../src/yang/example-ext-route-filter.yang ../src/yang/example-newco-acl.yang ../src/yang/ietf-ethertypes.yang
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" $< > $@
 	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/ietf-access-control-list.yang > ../src/yang/ietf-access-control-list\@$(shell date +%Y-%m-%d).yang
 	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/ietf-packet-fields.yang > ../src/yang/ietf-packet-fields\@$(shell date +%Y-%m-%d).yang
 	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/example-ext-route-filter.yang > ../src/yang/example-ext-route-filter\@$(shell date +%Y-%m-%d).yang
 	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/example-newco-acl.yang > ../src/yang/example-newco-acl\@$(shell date +%Y-%m-%d).yang
+	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/ietf-ethertypes.yang > ../src/yang/ietf-ethertypes\@$(shell date +%Y-%m-%d).yang
 
 	cd ../src; ./gen-trees.sh; cd ..;
 	../src/insert-figures.sh $@ > tmp; mv tmp $@

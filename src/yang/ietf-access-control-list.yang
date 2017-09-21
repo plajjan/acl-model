@@ -1,6 +1,7 @@
 module ietf-access-control-list {
   namespace "urn:ietf:params:xml:ns:yang:ietf-access-control-list";
   prefix acl;
+  yang-version 1.1;
   
   import ietf-yang-types {
     prefix yang;
@@ -268,7 +269,7 @@ module ietf-access-control-list {
             
             container l2-acl {
               if-feature l2-acl;
-              must "../../../../acl-type = 'eth-acl'";
+              must "derived-from(../../../../acl-type, 'acl:eth-acl')";
               uses packet-fields:acl-eth-header-fields;
               description
                 "Rule set for L2 ACL.";
@@ -276,7 +277,8 @@ module ietf-access-control-list {
 
             container ipv4-acl {
               if-feature ipv4-acl;
-	          must "../../../../acl-type = 'ipv4-acl'";
+	          must "derived-from(../../../../acl-type, " +
+            	   "'acl:ipv4-acl')";
               uses packet-fields:acl-ip-header-fields;
 	          uses packet-fields:acl-ipv4-header-fields;
               description
@@ -285,7 +287,8 @@ module ietf-access-control-list {
 
             container ipv6-acl {
               if-feature ipv6-acl;
-              must "../../../../acl-type = 'ipv6-acl'";
+              must "derived-from(../../../../acl-type, " +
+                   "'acl:ipv6-acl')";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
@@ -294,7 +297,8 @@ module ietf-access-control-list {
 
             container l2-l3-ipv4-acl {
               if-feature mixed-ipv4-acl;
-              must "../../../../acl-type = 'mixed-l2-l3-ipv4-acl'";
+              must "derived-from(../../../../acl-type, " +
+                   "'acl:mixed-l2-l3-ipv4-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -305,7 +309,8 @@ module ietf-access-control-list {
 
             container l2-l3-ipv6-acl {
               if-feature mixed-ipv6-acl;
-              must "../../../../acl-type = 'mixed-l2-l3-ipv6-acl'";
+              must "derived-from(../../../../acl-type, " +
+                   "'acl:mixed-l2-l3-ipv6-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
@@ -316,7 +321,8 @@ module ietf-access-control-list {
 
             container l2-l3-ipv4-ipv6-acl {
               if-feature l2-l3-ipv4-ipv6-acl;
-              must "../../../../acl-type = 'mixed-l2-l3-ipv4-ipv6-acl'";
+              must "derived-from(../../../../acl-type, " +
+                   "'acl:mixed-l2-l3-ipv4-ipv6-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -349,7 +355,7 @@ module ietf-access-control-list {
              
             container any-acl {
               if-feature any-acl;
-              must "../../../../acl-type = 'any-acl'";
+              must "derived-from(../../../../acl-type, 'acl:any-acl')";
               presence "Matches any";
               description
                 "Rule set that allows for a any ACL.";
