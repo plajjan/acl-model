@@ -608,23 +608,23 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-newco-acl@YYYY-MM-DD.yang)
         and IETF ACL YANG data models and its extension models. It should be
         fairly easy to do translation between ACL YANG model described in this
         draft and Linux nftables.</t>
+      </section>
 
-        <section title="Ethertypes">
-          <t>The ACL module is dependent on the definition of ethertypes. IEEE
-          owns the allocation of those ethertypes. This model is being
-          included here to enable definition of those types till such time
-          that IEEE takes up the task of publication of the model that defines
-          those ethertypes. At that time, this model can be deprecated.</t>
+      <section title="Ethertypes">
+        <t>The ACL module is dependent on the definition of ethertypes. IEEE
+        owns the allocation of those ethertypes. This model is being included
+        here to enable definition of those types till such time that IEEE
+        takes up the task of publication of the model that defines those
+        ethertypes. At that time, this model can be deprecated.</t>
 
-          <figure>
-            <artwork><![CDATA[
+        <figure>
+          <artwork><![CDATA[
 <CODE BEGINS> file "ietf-ethertypes@YYYY-MM-DD.yang"
 
 INSERT_TEXT_FROM_FILE(../src/yang/ietf-ethertypes@YYYY-MM-DD.yang)  
 
 <CODE ENDS>]]></artwork>
-          </figure>
-        </section>
+        </figure>
       </section>
     </section>
   </back>
