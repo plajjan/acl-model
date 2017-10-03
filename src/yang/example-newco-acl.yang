@@ -10,14 +10,6 @@ module example-newco-acl {
     prefix "ietf-acl";
   }
 
-  import ietf-interfaces {
-    prefix "ietf-if";
-  }
-
-  import ietf-yang-types {
-    prefix yang;
-  }
-
   organization
     "Newco model group.";
 
@@ -51,11 +43,9 @@ module example-newco-acl {
 
     choice metadata {
       description "Newco proprietary interface match condition";
-      list interface-name {
-        key input-interface;
-        ordered-by user;
-        description "Match interface name";
-        uses metadata;
+      leaf packet-length {
+        type uint16;
+        description "Match on packet length";
       }
     }
   }
@@ -103,19 +93,6 @@ module example-newco-acl {
     }
   }
 
-  grouping metadata {
-    description
-      "Fields associated with a packet which are not in
-       the header.";
-    leaf input-interface {
-      type ietf-if:interface-ref {
-        require-instance false;
-      }
-      description
-        "Packet was received on this interface";
-    }
-  }
-
   grouping match-simple-payload-protocol-value {
     description "Newco proprietary payload";
     leaf value-keyword {
@@ -131,57 +108,6 @@ module example-newco-acl {
         }
       }
       description "(null)";
-    }
-  }
-
-  augment "/ietf-if:interfaces/ietf-if:interface" {
-    description "Apply ACL to interfaces";
-    container acl {
-      description "ACL related properties.";
-      leaf acl-name {
-        type ietf-acl:acl-ref;
-        description "Access Control List name.";
-      }
-      leaf match-counter {
-        type yang:counter64;
-        config false;
-
-        description
-          "Total match count for Access Control
-           List on this interface";
-      }
-      choice direction {
-        description "Applying ACL in which traffic direction";
-        leaf in {
-          type empty;
-          description "Inbound traffic";
-        }
-        leaf out {
-          type empty;
-          description "Outbound traffic";
-        }
-      }
-    }
-  }
-
-  augment "/ietf-acl:access-lists/ietf-acl:acl/" +
-          "ietf-acl:aces/ietf-acl:ace/" +
-          "ietf-acl:ace-oper-data" {
-    description
-      "This is an example on how to apply acl to a target to collect
-       operational data";
-    container targets {
-      description "To which object is the ACL attached to";
-      choice interface {
-        description
-          "Access Control List was attached to this interface";
-        leaf-list interface-name{
-          type ietf-if:interface-ref {
-            require-instance true;
-          }
-          description "Attached to this interface name";
-        }
-      }
     }
   }
 }

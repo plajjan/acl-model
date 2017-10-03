@@ -70,7 +70,7 @@
       </address>
     </author>
 
-    <date day="02" month="October" year="2017"/>
+    <date day="03" month="October" year="2017"/>
 
     <area>Operations and Management Area</area>
 
@@ -251,11 +251,23 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD-tree.txt)
         list("access-list-entries"), indexed by the string "rule-name", has
         containers defining "matches" and "actions".</t>
 
+        <t>The model uses defines several ACL types in the form of identities
+        and features. Features are used by implementors to select the ACL
+        types the system can support. These types are implicitly inherited by
+        the "ace", thus safeguarding against misconfiguration of "ace" types
+        in an "acl".</t>
+
         <t>The "matches" define criteria used to identify patterns in
         "ietf-packet-fields". The "actions" define behavior to undertake once
         a "match" has been identified. In addition to permit and deny for
         actions, a logging option allows for a match to be logged that can be
-        used to determine which rule was matched upon.</t>
+        used to determine which rule was matched upon. The model also defines
+        the ability for ACL's to be attached to a particular interface. </t>
+
+        <t>Statistics in the ACL can be collected for an "ace" or for an
+        "interface". The feature statements defined for statistics can be used
+        to determine whether statistics are being collected per "ace", per
+        "interface" or both.</t>
 
         <figure>
           <artwork><![CDATA[
@@ -448,18 +460,14 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
       participation from many vendors.</t>
 
       <t>Authors would like to thank Jason Sterne, Lada Lhotka, Juergen
-      Schoenwalder, and David Bannister for their review of and suggestions to
-      the draft.</t>
+      Schoenwalder, David Bannister, and Jeff Haas for their review of and
+      suggestions to the draft.</t>
     </section>
 
     <section title="Open Issues">
       <t><list style="symbols">
           <t>The current model does not support the concept of "containers"
           used to contain multiple addresses per rule entry.</t>
-
-          <t>The model defines 'ether-type' node as a string. Ideally, this
-          should be a well defined list of all Ethernet Types assigned by
-          IEEE.</t>
         </list></t>
     </section>
 
@@ -518,22 +526,10 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-ext-route-filter@YYYY-MM-DD.yang)
       <!--routeacl-->
 
       <section anchor="newcoacl" title="A company proprietary module example">
-        <t>Access control list typically does not exist in isolation. Instead,
-        they are associated with a certain scope in which they are applied,
-        for example, an interface of a set of interfaces. How to attach an
-        access control list to an interface (or other system artifact) is
-        outside the scope of this model, as it depends on the specifics of the
-        system model that is being applied. However, in general, the general
-        design pattern will involved adding a data node with a reference, or
-        set of references, to ACLs that are to be applied to the interface.
-        For this purpose, the type definition "access-control-list-ref" can be
-        used.</t>
-
         <t>Module "example-newco-acl" is an example of company proprietary
         model that augments "ietf-acl" module. It shows how to use 'augment'
         with an XPath expression to add additional match criteria, action
-        criteria, and default actions when no ACE matches found, as well how
-        to attach an Access Control List to an interface. All these are
+        criteria, and default actions when no ACE matches found. All these are
         company proprietary extensions or system feature extensions.
         "example-newco-acl" is just an example and it is expected from vendors
         to create their own proprietary models.</t>
@@ -545,7 +541,7 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-ext-route-filter@YYYY-MM-DD.yang)
         metadata. The protocol-payload-choice uses a grouping with an
         enumeration of all supported protocol values. Metadata matches apply
         to fields associated with the packet but not in the packet header such
-        as input interface or overall packet length. In other example,
+        as overall packet length. In other example,
         /ietf-acl:access-lists/ietf-acl:acl/ietf-acl:aces/ietf-acl:ace/ietf-acl:actions
         are augmented with new choice of actions.</t>
 

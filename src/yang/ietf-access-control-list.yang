@@ -1,7 +1,7 @@
 module ietf-access-control-list {
+  yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:ietf-access-control-list";
   prefix acl;
-  yang-version 1.1;
   
   import ietf-yang-types {
     prefix yang;
@@ -28,7 +28,7 @@ module ietf-access-control-list {
      Editor: Lisa Huang
              lyihuang16@gmail.com
      Editor: Sonal Agarwal
-             agarwaso@cisco.com
+             sagarwal12@cisco.com
      Editor: Dana Blair
              dblair@cisco.com";
   
@@ -61,16 +61,63 @@ module ietf-access-control-list {
   /*
    * Identities
    */
+
+  /*
+   * Forwarding actions for a packet
+   */
+  identity forwarding-action {
+    description
+      "Base identity for actions in the forwarding category";
+  }
+
+  identity accept {
+    base forwarding-action;
+    description
+      "Accept the packet";
+  }
+
+  identity drop {
+    base forwarding-action;
+    description
+      "Drop packet without sending any ICMP error message";
+  }
+
+  identity reject {
+    base forwarding-action;
+    description
+      "Drop the packet and send an ICMP error message to the source";
+  }
+
+  /*
+   * Logging actions for a packet
+   */
+  identity log-action {
+    description
+      "Base identity for defining the destination for logging actions";
+  }
+
+  identity log-syslog {
+    base log-action;
+    description
+      "System log (syslog) the information for the packet";
+  }
+
+  identity log-none {
+    base log-action;
+    description
+      "No logging for the packet";
+  }
+
   identity acl-base {
     description
       "Base Access Control List type for all Access Control List type
-      identifiers.";
+       identifiers.";
   }
 
   identity ipv4-acl {
     base acl:acl-base;
     description
-       "ACL that primarily matches on fields from the IPv4 header
+      "ACL that primarily matches on fields from the IPv4 header
        (e.g. IPv4 destination address) and layer 4 headers (e.g. TCP
        destination port).  An acl of type ipv4-acl does not contain
        matches on fields in the ethernet header or the IPv6 header.";
@@ -80,18 +127,18 @@ module ietf-access-control-list {
     base acl:acl-base;
     description
       "ACL that primarily matches on fields from the IPv6 header
-      (e.g. IPv6 destination address) and layer 4 headers (e.g. TCP
-      destination port). An acl of type ipv6-acl does not contain
-      matches on fields in the ethernet header or the IPv4 header.";
+       (e.g. IPv6 destination address) and layer 4 headers (e.g. TCP
+       destination port). An acl of type ipv6-acl does not contain
+       matches on fields in the ethernet header or the IPv4 header.";
   }
 
   identity eth-acl {
     base acl:acl-base;
     description
       "ACL that primarily matches on fields in the ethernet header,
-      like 10/100/1000baseT or WiFi Access Control List. An acl of
-      type eth-acl does not contain matches on fields in the IPv4
-      header, IPv6 header or layer 4 headers.";
+       like 10/100/1000baseT or WiFi Access Control List. An acl of
+       type eth-acl does not contain matches on fields in the IPv4
+       header, IPv6 header or layer 4 headers.";
   }
 
   identity mixed-l2-l3-ipv4-acl {
@@ -187,6 +234,26 @@ module ietf-access-control-list {
   }
 
   /*
+   * Stats Features
+   */
+  feature interface-stats {
+    description
+      "ACL counters are available and reported only per interface";
+  }
+   
+  feature acl-aggregate-stats {
+    description
+      "ACL counters are aggregated over all interfaces, and reported
+       only per ACL entry";
+  }
+   
+  feature interface-acl-aggregate {
+    description
+      "ACL counters are reported per interface, and also aggregated
+       and reported per ACL entry";
+  }
+
+  /*
    * Typedefs
    */
   typedef acl-type {
@@ -195,7 +262,7 @@ module ietf-access-control-list {
     }
     description
       "This type is used to refer to an Access Control List
-      (ACL) type";
+       (ACL) type";
   }
 
   typedef acl-ref {
@@ -204,7 +271,101 @@ module ietf-access-control-list {
     }
     description
       "This type is used by data models that need to reference an
-      Access Control List";
+       Access Control List";
+  }
+
+  grouping interface-acl {
+    description
+      "Grouping for per-interface ingress ACL data";
+    
+    container acl-sets {
+      description
+        "Enclosing container the list of ingress ACLs on the
+         interface";
+ 
+      list acl-set {
+        key "set-name type";
+        ordered-by user;
+        description
+          "List of ingress ACLs on the interface";
+
+        leaf set-name {
+          type leafref {
+            path "../../../../../../acl/acl-name";
+          }
+          description
+            "Reference to the ACL set name applied on ingress";
+        }
+
+        leaf type {
+          type leafref {
+            path "../../../../../../acl/acl-type";
+          }
+          description
+            "Reference to the ACL set type applied on ingress";
+        }
+
+        list ace {
+          if-feature "interface-stats or interface-acl-aggregate";
+          key "rule-name";
+          description
+            "List of access list entries(ACE)";
+          leaf rule-name {
+            type leafref {
+              path "../../../../../../../acl/aces/ace/rule-name";
+            }
+            description
+              "The ace rule-name";
+          }
+          uses acl-counters;
+        }
+      }
+    }
+  }
+
+  grouping acl-counters {
+    description
+      "Common grouping for ACL counters";
+
+    leaf matched-packets {
+      type yang:counter64;
+      config false;
+      description
+        "Count of the number of packets matching the current ACL
+         entry.
+
+         An implementation should provide this counter on a
+         per-interface per-ACL-entry if possible.
+
+         If an implementation only supports ACL counters per entry
+         (i.e., not broken out per interface), then the value
+         should be equal to the aggregate count across all interfaces.
+
+         An implementation that provides counters per entry per
+         interface is not required to also provide an aggregate count,
+         e.g., per entry -- the user is expected to be able implement
+         the required aggregation if such a count is needed.";
+    }
+
+    leaf matched-octets {
+      type yang:counter64;
+      config false;
+      description
+        "Count of the number of octets (bytes) matching the current
+         ACL entry.
+
+         An implementation should provide this counter on a
+         per-interface per-ACL-entry if possible.
+
+         If an implementation only supports ACL counters per entry
+         (i.e., not broken out per interface), then the value
+         should be equal to the aggregate count across all interfaces.
+
+         An implementation that provides counters per entry per
+         interface is not required to also provide an aggregate count,
+         e.g., per entry -- the user is expected to be able implement
+         the required aggregation if such a count is needed.";
+    }
   }
 
   /*
@@ -226,7 +387,9 @@ module ietf-access-control-list {
          model accommodates customizing Access Control Lists for
          each kind and for each vendor.";
       leaf acl-name {
-        type string;
+        type string {
+          length "1..64";
+        }
         description
           "The name of access-list. A device MAY restrict the length
            and value of this name, possibly space and special
@@ -239,11 +402,6 @@ module ietf-access-control-list {
            type of match criteria (e.g. ethernet, IPv4, IPv6, mixed, 
            etc) used in the list instance.";
       }
-      container acl-oper-data {
-        config false;
-        description
-          "Overall Access Control List operational data";
-      }
       container aces {
         description
           "The access-list-entries container contains
@@ -254,7 +412,9 @@ module ietf-access-control-list {
           description
             "List of access list entries(ACE)";
           leaf rule-name {
-            type string;
+            type string {
+              length "1..64";
+            }
             description
               "A unique name identifying this Access List
                Entry(ACE).";
@@ -277,10 +437,10 @@ module ietf-access-control-list {
 
             container ipv4-acl {
               if-feature ipv4-acl;
-	          must "derived-from(../../../../acl-type, " +
+	            must "derived-from(../../../../acl-type, " +
             	   "'acl:ipv4-acl')";
               uses packet-fields:acl-ip-header-fields;
-	          uses packet-fields:acl-ipv4-header-fields;
+	            uses packet-fields:acl-ipv4-header-fields;
               description
                 "Rule set that supports IPv4 headers.";
             }
@@ -370,50 +530,66 @@ module ietf-access-control-list {
           }
 
           container actions {
+            if-feature "acl-aggregate-stats or interface-acl-aggregate";
             description
-              "Definitions of action criteria for this Access List
-               Entry.";
-            choice packet-handling {
-              default "deny";
-              description
-                "Packet handling action.";
-              case deny {
-                leaf deny {
-                  type empty;
+              "Definitions of action criteria for this ace entry";
+                leaf forwarding {
+                  type identityref {
+                    base forwarding-action;
+                  }
+                  mandatory true;
                   description
-                    "Deny action.";
+                    "Specifies the forwarding action per ace entry";
                 }
-              }
-              case permit {
-                leaf permit {
-                  type empty;
+
+                leaf logging {
+                  type identityref {
+                    base log-action;
+                  }
+                  default log-none;
                   description
-                    "Permit action.";
+                  "Specifies the log action and destination for
+                   matched packets. Default value is not to log the
+                   packet.";
                 }
-              }
-            }
-            leaf logging {
-              type boolean;
-              default "false";
-              description
-                "Log the rule on which the match occurred.
-                 Setting the value to true enables logging,
-                 whereas setting the value to false disables it.";
-            }
+
+                leaf icmp-off {
+                  type boolean;
+                  default "false";
+                  description
+                  "true indicates ICMP errors will never be generated
+                   in response to an ICMP error message. false indicates
+                   ICMP error will be generated.";
+                }
           }
-          /*
-           * Operational state data nodes
-           */
-          container ace-oper-data {
-            config false;
-            description
-              "Operational data for this Access List Entry.";
-            leaf match-counter {
-              type yang:counter64;
-              description
-                "Number of matches for this Access List Entry";
-            }
-          }
+          uses acl-counters;
+        }
+      }
+    }
+    container interfaces {
+      description
+        "Enclosing container for the list of interfaces on which
+         ACLs are set";
+
+      list interface {
+        key "interface-id";
+          description
+            "List of interfaces on which ACLs are set";
+
+        leaf interface-id {
+          type if:interface-ref;
+          description
+            "Reference to the interface id list key";
+        }
+        container ingress {
+          uses interface-acl;
+          description
+            "The ACL's applied to ingress interface";
+        }
+        container egress {
+          uses interface-acl;
+          description
+            "The ACL's applied to egress interface";
         }
       }
     }
