@@ -21,7 +21,7 @@ module example-newco-acl {
   revision YYYY-MM-DD {
     description
       "Creating NewCo proprietary extensions to ietf-acl model";
-    
+
     reference
       "RFC XXXX: Network Access Control List (ACL)
        YANG Data  Model";

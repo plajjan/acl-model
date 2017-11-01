@@ -2,23 +2,23 @@ module ietf-access-control-list {
   yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:ietf-access-control-list";
   prefix acl;
-  
+
   import ietf-yang-types {
     prefix yang;
   }
-  
+
   import ietf-packet-fields {
     prefix packet-fields;
   }
-  
+
   import ietf-interfaces {
     prefix if;
   }
-  
-  organization 
+
+  organization
     "IETF NETMOD (NETCONF Data Modeling Language)
      Working Group";
-  
+
   contact
     "WG Web: http://tools.ietf.org/wg/netmod/
      WG List: netmod@ietf.org
@@ -31,11 +31,11 @@ module ietf-access-control-list {
              sagarwal12@cisco.com
      Editor: Dana Blair
              dblair@cisco.com";
-  
+
   description
     "This YANG module defines a component that describe the
      configuration of Access Control Lists (ACLs).
-	  
+
      Copyright (c) 2017 IETF Trust and the persons identified as
      the document authors.  All rights reserved.
      Redistribution and use in source and binary forms, with or
@@ -44,10 +44,10 @@ module ietf-access-control-list {
      License set forth in Section 4.c of the IETF Trust's Legal
      Provisions Relating to IETF Documents
      (http://trustee.ietf.org/license-info).
-	  
+
      This version of this YANG module is part of RFC XXXX; see
      the RFC itself for full legal notices.";
-  
+
   revision YYYY-MM-DD {
     description
       "Added feature and identity statements for different types
@@ -57,7 +57,7 @@ module ietf-access-control-list {
     reference
       "RFC XXX: Network Access Control List (ACL) YANG Data Model.";
   }
-  
+
   /*
    * Identities
    */
@@ -143,8 +143,8 @@ module ietf-access-control-list {
 
   identity mixed-l2-l3-ipv4-acl {
     base "acl:acl-base";
-     
-    description 
+
+    description
       "ACL that contains a mix of entries that
        primarily match on fields in ethernet headers,
        entries that primarily match on IPv4 headers.
@@ -154,8 +154,8 @@ module ietf-access-control-list {
 
   identity mixed-l2-l3-ipv6-acl {
     base "acl:acl-base";
-     
-    description 
+
+    description
       "ACL that contains a mix of entries that
        primarily match on fields in ethernet headers, entries
        that primarily match on fields in IPv6 headers. Matching on
@@ -164,18 +164,18 @@ module ietf-access-control-list {
 
   identity mixed-l2-l3-ipv4-ipv6-acl {
     base "acl:acl-base";
-     
-    description 
+
+    description
       "ACL that contains a mix of entries that
        primarily match on fields in ethernet headers, entries
        that primarily match on fields in IPv4 headers, and entries
        that primarily match on fields in IPv6 headers. Matching on
        layer 4 header fields may also exist in the list.";
   }
-  
+
   identity any-acl {
     base "acl:acl-base";
-	  
+
     description
       "ACL that can contain any pattern to match upon";
   }
@@ -189,48 +189,48 @@ module ietf-access-control-list {
   }
 
   feature ipv4-acl {
-    description 
+    description
       "Layer 3 IPv4 ACL supported";
   }
-	
+
   feature ipv6-acl {
     description
       "Layer 3 IPv6 ACL supported";
   }
-	
+
   feature mixed-ipv4-acl {
     description
       "Layer 2 and Layer 3 IPv4 ACL supported";
   }
-	
+
   feature mixed-ipv6-acl {
     description
       "Layer 2 and Layer 3 IPv6 ACL supported";
   }
-	
+
   feature l2-l3-ipv4-ipv6-acl {
     description
       "Layer 2 and any Layer 3 ACL supported.";
   }
-   
+
   feature tcp-acl {
     description
       "TCP header ACL supported.";
   }
-   
+
   feature udp-acl {
     description
       "UDP header ACL supported.";
   }
-   
+
   feature icmp-acl {
     description
       "ICMP header ACL supported.";
   }
-   
+
   feature any-acl {
     description
-     "ACL for any pattern.";
+      "ACL for any pattern.";
   }
 
   /*
@@ -240,13 +240,13 @@ module ietf-access-control-list {
     description
       "ACL counters are available and reported only per interface";
   }
-   
+
   feature acl-aggregate-stats {
     description
       "ACL counters are aggregated over all interfaces, and reported
        only per ACL entry";
   }
-   
+
   feature interface-acl-aggregate {
     description
       "ACL counters are reported per interface, and also aggregated
@@ -277,12 +277,12 @@ module ietf-access-control-list {
   grouping interface-acl {
     description
       "Grouping for per-interface ingress ACL data";
-    
+
     container acl-sets {
       description
         "Enclosing container the list of ingress ACLs on the
          interface";
- 
+
       list acl-set {
         key "set-name type";
         ordered-by user;
@@ -399,7 +399,7 @@ module ietf-access-control-list {
         type acl-type;
         description
           "Type of access control list. Indicates the primary intended
-           type of match criteria (e.g. ethernet, IPv4, IPv6, mixed, 
+           type of match criteria (e.g. ethernet, IPv4, IPv6, mixed,
            etc) used in the list instance.";
       }
       container aces {
@@ -422,11 +422,11 @@ module ietf-access-control-list {
 
           container matches {
             description
-              "The rules in this set determine what fields will be 
-               matched upon before any action is taken on them. 
-               The rules are selected based on the feature set 
+              "The rules in this set determine what fields will be
+               matched upon before any action is taken on them.
+               The rules are selected based on the feature set
                defined by the server and the acl-type defined.";
-            
+
             container l2-acl {
               if-feature l2-acl;
               must "derived-from(../../../../acl-type, 'acl:eth-acl')";
@@ -437,10 +437,10 @@ module ietf-access-control-list {
 
             container ipv4-acl {
               if-feature ipv4-acl;
-	            must "derived-from(../../../../acl-type, " +
-            	   "'acl:ipv4-acl')";
+              must "derived-from(../../../../acl-type, " +
+                "'acl:ipv4-acl')";
               uses packet-fields:acl-ip-header-fields;
-	            uses packet-fields:acl-ipv4-header-fields;
+              uses packet-fields:acl-ipv4-header-fields;
               description
                 "Rule set that supports IPv4 headers.";
             }
@@ -448,7 +448,7 @@ module ietf-access-control-list {
             container ipv6-acl {
               if-feature ipv6-acl;
               must "derived-from(../../../../acl-type, " +
-                   "'acl:ipv6-acl')";
+                "'acl:ipv6-acl')";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
@@ -458,61 +458,61 @@ module ietf-access-control-list {
             container l2-l3-ipv4-acl {
               if-feature mixed-ipv4-acl;
               must "derived-from(../../../../acl-type, " +
-                   "'acl:mixed-l2-l3-ipv4-acl')";
+                "'acl:mixed-l2-l3-ipv4-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
               description
-                "Rule set that is a logical AND (&&) of l2 
+                "Rule set that is a logical AND (&&) of l2
                  and ipv4 headers.";
             }
 
             container l2-l3-ipv6-acl {
               if-feature mixed-ipv6-acl;
               must "derived-from(../../../../acl-type, " +
-                   "'acl:mixed-l2-l3-ipv6-acl')";
+                "'acl:mixed-l2-l3-ipv6-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that is a logical AND (&&) of L2 
+                "Rule set that is a logical AND (&&) of L2
                  && IPv6 headers.";
             }
 
             container l2-l3-ipv4-ipv6-acl {
               if-feature l2-l3-ipv4-ipv6-acl;
               must "derived-from(../../../../acl-type, " +
-                   "'acl:mixed-l2-l3-ipv4-ipv6-acl')";
+                "'acl:mixed-l2-l3-ipv4-ipv6-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that is a logical AND (&&) of L2 
+                "Rule set that is a logical AND (&&) of L2
                  && IPv4 && IPv6 headers.";
             }
-            
+
             container tcp-acl {
               if-feature tcp-acl;
               uses packet-fields:acl-tcp-header-fields;
               description
                 "Rule set that defines TCP headers.";
             }
-            
+
             container udp-acl {
               if-feature udp-acl;
               uses packet-fields:acl-udp-header-fields;
               description
                 "Rule set that defines UDP headers.";
             }
-            
+
             container icmp-acl {
               if-feature icmp-acl;
               uses packet-fields:acl-icmp-header-fields;
               description
                 "Rule set that defines ICMP headers.";
             }
-             
+
             container any-acl {
               if-feature any-acl;
               must "derived-from(../../../../acl-type, 'acl:any-acl')";
@@ -520,7 +520,7 @@ module ietf-access-control-list {
               description
                 "Rule set that allows for a any ACL.";
             }
-            
+
             leaf interface {
               type if:interface-ref;
               description
@@ -533,34 +533,34 @@ module ietf-access-control-list {
             if-feature "acl-aggregate-stats or interface-acl-aggregate";
             description
               "Definitions of action criteria for this ace entry";
-                leaf forwarding {
-                  type identityref {
-                    base forwarding-action;
-                  }
-                  mandatory true;
-                  description
-                    "Specifies the forwarding action per ace entry";
-                }
+            leaf forwarding {
+              type identityref {
+                base forwarding-action;
+              }
+              mandatory true;
+              description
+                "Specifies the forwarding action per ace entry";
+            }
 
-                leaf logging {
-                  type identityref {
-                    base log-action;
-                  }
-                  default log-none;
-                  description
-                  "Specifies the log action and destination for
+            leaf logging {
+              type identityref {
+                base log-action;
+              }
+              default log-none;
+              description
+                "Specifies the log action and destination for
                    matched packets. Default value is not to log the
                    packet.";
-                }
+            }
 
-                leaf icmp-off {
-                  type boolean;
-                  default "false";
-                  description
-                  "true indicates ICMP errors will never be generated
+            leaf icmp-off {
+              type boolean;
+              default "false";
+              description
+                "true indicates ICMP errors will never be generated
                    in response to an ICMP error message. false indicates
                    ICMP error will be generated.";
-                }
+            }
           }
           uses acl-counters;
         }
@@ -573,8 +573,8 @@ module ietf-access-control-list {
 
       list interface {
         key "interface-id";
-          description
-            "List of interfaces on which ACLs are set";
+        description
+          "List of interfaces on which ACLs are set";
 
         leaf interface-id {
           type if:interface-ref;

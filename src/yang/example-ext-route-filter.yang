@@ -1,7 +1,7 @@
 module example-ext-route-filter {
   namespace "urn:ietf:params:xml:ns:yang:example-ext-route-filter";
   prefix example-ext-route-filter;
-  
+
   import ietf-inet-types {
     prefix "inet";
   }
@@ -29,13 +29,13 @@ module example-ext-route-filter {
       ietf-access-control-list model";
     reference "Example route filter";
   }
-  
+
   augment "/ietf-acl:access-lists/ietf-acl:acl/" +
           "ietf-acl:aces/ietf-acl:ace/ietf-acl:matches" {
     description "
       This module augments the matches container in the ietf-acl
       module with route filter specific actions";
-    
+
     choice route-prefix{
       description "Define route filter match criteria";
       case range {
