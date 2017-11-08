@@ -457,16 +457,6 @@ module ietf-access-control-list {
               }
             }
 
-            container ipv4v6-acl {
-              if-feature ipv4v6-acl;
-              when "../../../../acl-type = 'ipv4v6-acl'";
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv4-header-fields;
-              uses packet-fields:acl-ipv6-header-fields;
-              description
-                "Match on IPv4 or IPv6 fields";
-            }
-
             choice l2 {
               container eth-acl {
                 if-feature eth-acl;
@@ -475,37 +465,6 @@ module ietf-access-control-list {
                 description
                   "Match on Ethernet fields.";
               }
-            }
-
-            container eth-ipv4-acl {
-              if-feature eth-ipv4-acl;
-              when "../../../../acl-type = 'eth-ipv4-acl'";
-              uses packet-fields:acl-eth-header-fields;
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv4-header-fields;
-              description
-                "Match on Ethernet and IPv4 fields.";
-            }
-
-            container eth-ipv6-acl {
-              if-feature eth-ipv6-acl;
-              when "../../../../acl-type = 'eth-ipv6-acl'";
-              uses packet-fields:acl-eth-header-fields;
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv6-header-fields;
-              description
-                "Match on Ethernet and IPv6 fields";
-            }
-
-            container eth-ipv4v6-acl {
-              if-feature eth-ipv4v6-acl;
-              when "../../../../acl-type = 'eth-ipv4v6-acl'";
-              uses packet-fields:acl-eth-header-fields;
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv4-header-fields;
-              uses packet-fields:acl-ipv6-header-fields;
-              description
-                "Match on Ethernet and (IPv4 or IPv6) fields.";
             }
 
             choice l4 {
