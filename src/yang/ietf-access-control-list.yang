@@ -484,11 +484,20 @@ module ietf-access-control-list {
               }
             }
 
-            leaf interface {
+            leaf egress-interface {
               type if:interface-ref;
               description
-                "Interface name that is specified to
-                 match upon.";
+                "Egress interface. This should not be used if this ACL
+                is attached as an egress ACL (or the value should equal
+                the interface to which the ACL is attached).";
+            }
+
+            leaf ingress-interface {
+              type if:interface-ref;
+              description
+                "Ingress interface. This should not be used if this ACL
+                is attached as an ingress ACL (or the value should equal
+                the interface to which the ACL is attached)";
             }
           }
 
