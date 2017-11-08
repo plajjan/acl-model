@@ -432,7 +432,7 @@ module ietf-access-control-list {
 
             container ipv4-acl {
               if-feature ipv4-acl;
-              must "derived-from(../../../../acl-type, " +
+              when "derived-from(../../../../acl-type, " +
                 "'acl:ipv4-acl')";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -442,7 +442,7 @@ module ietf-access-control-list {
 
             container ipv6-acl {
               if-feature ipv6-acl;
-              must "derived-from(../../../../acl-type, " +
+              when "derived-from(../../../../acl-type, " +
                 "'acl:ipv6-acl')";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
@@ -452,7 +452,7 @@ module ietf-access-control-list {
 
             container ipv4v6-acl {
               if-feature ipv4v6-acl;
-              must "../../../../acl-type = 'ipv4v6-acl'";
+              when "../../../../acl-type = 'ipv4v6-acl'";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
@@ -462,7 +462,7 @@ module ietf-access-control-list {
 
             container eth-acl {
               if-feature eth-acl;
-              must "../../../../acl-type = 'eth-acl'";
+              when "../../../../acl-type = 'eth-acl'";
               uses packet-fields:acl-eth-header-fields;
               description
                 "Rule set for L2 Ethernet ACL.";
@@ -470,7 +470,7 @@ module ietf-access-control-list {
 
             container eth-ipv4-acl {
               if-feature eth-ipv4-acl;
-              must "../../../../acl-type = 'eth-ipv4-acl'";
+              when "../../../../acl-type = 'eth-ipv4-acl'";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -481,7 +481,7 @@ module ietf-access-control-list {
 
             container eth-ipv6-acl {
               if-feature eth-ipv6-acl;
-              must "../../../../acl-type = 'eth-ipv6-acl'";
+              when "../../../../acl-type = 'eth-ipv6-acl'";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
@@ -492,7 +492,7 @@ module ietf-access-control-list {
 
             container eth-ipv4v6-acl {
               if-feature eth-ipv4v6-acl;
-              must "../../../../acl-type = 'eth-ipv4v6-acl'";
+              when "../../../../acl-type = 'eth-ipv4v6-acl'";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -525,7 +525,7 @@ module ietf-access-control-list {
 
             container any-acl {
               if-feature any-acl;
-              must "derived-from(../../../../acl-type, 'acl:any-acl')";
+              when "derived-from(../../../../acl-type, 'acl:any-acl')";
               presence "Matches any";
               description
                 "Rule set that allows for a any ACL.";
