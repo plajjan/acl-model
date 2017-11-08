@@ -437,56 +437,50 @@ module ietf-access-control-list {
 
             choice l2 {
               container eth-acl {
+                description "Match on Ethernet fields.";
                 if-feature eth-acl;
                 when "derived-from(../../../../acl-type, 'acl:eth-acl'";
                 uses packet-fields:acl-eth-header-fields;
-                description
-                  "Match on Ethernet fields.";
               }
             }
 
             choice l3 {
               container ipv4-acl {
+                description "Match on IPv4 fields.";
                 if-feature ipv4-acl;
                 when "derived-from(../../../../../acl-type, " +
                   "'acl:ipv4-acl')";
                 uses packet-fields:acl-ip-header-fields;
                 uses packet-fields:acl-ipv4-header-fields;
-                description
-                  "Match on IPv4 fields.";
               }
 
               container ipv6-acl {
+                description "Match on IPv6 fields.";
                 if-feature ipv6-acl;
                 when "derived-from(../../../../../acl-type, " +
                   "'acl:ipv6-acl')";
                 uses packet-fields:acl-ip-header-fields;
                 uses packet-fields:acl-ipv6-header-fields;
-                description
-                  "Match on IPv6 fields.";
               }
             }
 
             choice l4 {
               container tcp-acl {
+                description "Match on TCP fields";
                 if-feature tcp-fields;
                 uses packet-fields:acl-tcp-header-fields;
-                description
-                  "Match on TCP fields";
               }
 
               container udp-acl {
+                description "Match on UDP fields";
                 if-feature udp-fields;
                 uses packet-fields:acl-udp-header-fields;
-                description
-                  "Match on UDP fields";
               }
 
               container icmp-acl {
+                description "Match on ICMP fields";
                 if-feature icmp-fields;
                 uses packet-fields:acl-icmp-header-fields;
-                description
-                  "Match on ICMP fields";
               }
             }
 
