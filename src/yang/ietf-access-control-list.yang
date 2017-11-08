@@ -465,7 +465,7 @@ module ietf-access-control-list {
             choice l2 {
               container eth-acl {
                 if-feature eth-acl;
-                when "../../../../acl-type = 'eth-acl'";
+                when "derived-from(../../../../acl-type, 'acl:eth-acl'";
                 uses packet-fields:acl-eth-header-fields;
                 description
                   "Match on Ethernet fields.";
