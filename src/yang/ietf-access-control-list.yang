@@ -484,14 +484,6 @@ module ietf-access-control-list {
               }
             }
 
-            container any-acl {
-              if-feature any-acl;
-              when "derived-from(../../../../acl-type, 'acl:any-acl')";
-              presence "Matches any";
-              description
-                "Match on any field";
-            }
-
             leaf interface {
               type if:interface-ref;
               description
