@@ -436,7 +436,7 @@ module ietf-access-control-list {
                defined by the server and the acl-type defined.";
 
             choice l2 {
-              container eth-acl {
+              container ethernet {
                 description "Match on Ethernet fields.";
                 if-feature eth-acl;
                 when "derived-from(../../../../acl-type, 'acl:eth-acl'";
@@ -445,7 +445,7 @@ module ietf-access-control-list {
             }
 
             choice l3 {
-              container ipv4-acl {
+              container ipv4 {
                 description "Match on IPv4 fields.";
                 if-feature ipv4-acl;
                 when "derived-from(../../../../../acl-type, " +
@@ -454,7 +454,7 @@ module ietf-access-control-list {
                 uses packet-fields:acl-ipv4-header-fields;
               }
 
-              container ipv6-acl {
+              container ipv6 {
                 description "Match on IPv6 fields.";
                 if-feature ipv6-acl;
                 when "derived-from(../../../../../acl-type, " +
@@ -465,19 +465,19 @@ module ietf-access-control-list {
             }
 
             choice l4 {
-              container tcp-acl {
+              container tcp {
                 description "Match on TCP fields";
                 if-feature tcp-fields;
                 uses packet-fields:acl-tcp-header-fields;
               }
 
-              container udp-acl {
+              container udp {
                 description "Match on UDP fields";
                 if-feature udp-fields;
                 uses packet-fields:acl-udp-header-fields;
               }
 
-              container icmp-acl {
+              container icmp {
                 description "Match on ICMP fields";
                 if-feature icmp-fields;
                 uses packet-fields:acl-icmp-header-fields;
