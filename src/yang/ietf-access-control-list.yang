@@ -133,7 +133,8 @@ module ietf-access-control-list {
   }
 
   identity ipv4v6-acl {
-    base acl:acl-base;
+    base acl:ipv4-acl;
+    base acl:ipv6-acl;
     description
       "ACL that can match on fields from an IPv4 or IPv6 header (e.g.
       IPv4 destination address or IPv6 destination address) and layer 4
@@ -149,7 +150,8 @@ module ietf-access-control-list {
   }
 
   identity eth-ipv4-acl {
-    base "acl:acl-base";
+    base "acl:eth-base";
+    base "acl:ipv4-acl";
     description
       "ACL that can match on fields in the Ethernet header, IPv4 header
       and in L4 headers. Matching on L2 headers other than Ethernet
@@ -157,7 +159,8 @@ module ietf-access-control-list {
   }
 
   identity eth-ipv6-acl {
-    base "acl:acl-base";
+    base "acl:eth-base";
+    base "acl:ipv6-acl";
     description
       "ACL that can match on fields in the Ethernet header, IPv6 header
       and in L4 headers. Matching on L2 headers other than Ethernet
@@ -165,7 +168,9 @@ module ietf-access-control-list {
   }
 
   identity eth-ipv4v6-acl {
-    base "acl:acl-base";
+    base "acl:eth-base";
+    base "acl:ipv4-acl";
+    base "acl:ipv6-acl";
     description
       "ACL that can match on fields in the Ethernet header, from an IPv4
       or IPv6 header and layer 4 headers.";
