@@ -437,7 +437,7 @@ module ietf-access-control-list {
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
               description
-                "Rule set that supports IPv4 headers.";
+                "Match on IPv4 fields.";
             }
 
             container ipv6-acl {
@@ -447,7 +447,7 @@ module ietf-access-control-list {
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that supports IPv6 headers.";
+                "Match on IPv6 fields.";
             }
 
             container ipv4v6-acl {
@@ -457,7 +457,7 @@ module ietf-access-control-list {
               uses packet-fields:acl-ipv4-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that is a logical OR (||) of IPv4 and IPv6 headers.";
+                "Match on IPv4 or IPv6 fields";
             }
 
             container eth-acl {
@@ -465,7 +465,7 @@ module ietf-access-control-list {
               when "../../../../acl-type = 'eth-acl'";
               uses packet-fields:acl-eth-header-fields;
               description
-                "Rule set for L2 Ethernet ACL.";
+                "Match on Ethernet fields.";
             }
 
             container eth-ipv4-acl {
@@ -475,8 +475,7 @@ module ietf-access-control-list {
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
               description
-                "Rule set that is a logical AND (&&) of l2
-                 and ipv4 headers.";
+                "Match on Ethernet and IPv4 fields.";
             }
 
             container eth-ipv6-acl {
@@ -486,8 +485,7 @@ module ietf-access-control-list {
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that is a logical AND (&&) of L2
-                 && IPv6 headers.";
+                "Match on Ethernet and IPv6 fields";
             }
 
             container eth-ipv4v6-acl {
@@ -498,29 +496,28 @@ module ietf-access-control-list {
               uses packet-fields:acl-ipv4-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
-                "Rule set that is a logical AND (&&) of L2
-                 && IPv4 && IPv6 headers.";
+                "Match on Ethernet and (IPv4 or IPv6) fields.";
             }
 
             container tcp-acl {
               if-feature tcp-fields;
               uses packet-fields:acl-tcp-header-fields;
               description
-                "Rule set that defines TCP headers.";
+                "Match on TCP fields";
             }
 
             container udp-acl {
               if-feature udp-fields;
               uses packet-fields:acl-udp-header-fields;
               description
-                "Rule set that defines UDP headers.";
+                "Match on UDP fields";
             }
 
             container icmp-acl {
               if-feature icmp-fields;
               uses packet-fields:acl-icmp-header-fields;
               description
-                "Rule set that defines ICMP headers.";
+                "Match on ICMP fields";
             }
 
             container any-acl {
@@ -528,7 +525,7 @@ module ietf-access-control-list {
               when "derived-from(../../../../acl-type, 'acl:any-acl')";
               presence "Matches any";
               description
-                "Rule set that allows for a any ACL.";
+                "Match on any field";
             }
 
             leaf interface {
