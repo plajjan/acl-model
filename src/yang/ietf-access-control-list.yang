@@ -430,24 +430,26 @@ module ietf-access-control-list {
                The rules are selected based on the feature set
                defined by the server and the acl-type defined.";
 
-            container ipv4-acl {
-              if-feature ipv4-acl;
-              when "derived-from(../../../../acl-type, " +
-                "'acl:ipv4-acl')";
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv4-header-fields;
-              description
-                "Match on IPv4 fields.";
-            }
+            choice l3 {
+              container ipv4-acl {
+                if-feature ipv4-acl;
+                when "derived-from(../../../../../acl-type, " +
+                  "'acl:ipv4-acl')";
+                uses packet-fields:acl-ip-header-fields;
+                uses packet-fields:acl-ipv4-header-fields;
+                description
+                  "Match on IPv4 fields.";
+              }
 
-            container ipv6-acl {
-              if-feature ipv6-acl;
-              when "derived-from(../../../../acl-type, " +
-                "'acl:ipv6-acl')";
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv6-header-fields;
-              description
-                "Match on IPv6 fields.";
+              container ipv6-acl {
+                if-feature ipv6-acl;
+                when "derived-from(../../../../../acl-type, " +
+                  "'acl:ipv6-acl')";
+                uses packet-fields:acl-ip-header-fields;
+                uses packet-fields:acl-ipv6-header-fields;
+                description
+                  "Match on IPv6 fields.";
+              }
             }
 
             container ipv4v6-acl {
@@ -460,12 +462,14 @@ module ietf-access-control-list {
                 "Match on IPv4 or IPv6 fields";
             }
 
-            container eth-acl {
-              if-feature eth-acl;
-              when "../../../../acl-type = 'eth-acl'";
-              uses packet-fields:acl-eth-header-fields;
-              description
-                "Match on Ethernet fields.";
+            choice l2 {
+              container eth-acl {
+                if-feature eth-acl;
+                when "../../../../acl-type = 'eth-acl'";
+                uses packet-fields:acl-eth-header-fields;
+                description
+                  "Match on Ethernet fields.";
+              }
             }
 
             container eth-ipv4-acl {
@@ -499,25 +503,27 @@ module ietf-access-control-list {
                 "Match on Ethernet and (IPv4 or IPv6) fields.";
             }
 
-            container tcp-acl {
-              if-feature tcp-fields;
-              uses packet-fields:acl-tcp-header-fields;
-              description
-                "Match on TCP fields";
-            }
+            choice l4 {
+              container tcp-acl {
+                if-feature tcp-fields;
+                uses packet-fields:acl-tcp-header-fields;
+                description
+                  "Match on TCP fields";
+              }
 
-            container udp-acl {
-              if-feature udp-fields;
-              uses packet-fields:acl-udp-header-fields;
-              description
-                "Match on UDP fields";
-            }
+              container udp-acl {
+                if-feature udp-fields;
+                uses packet-fields:acl-udp-header-fields;
+                description
+                  "Match on UDP fields";
+              }
 
-            container icmp-acl {
-              if-feature icmp-fields;
-              uses packet-fields:acl-icmp-header-fields;
-              description
-                "Match on ICMP fields";
+              container icmp-acl {
+                if-feature icmp-fields;
+                uses packet-fields:acl-icmp-header-fields;
+                description
+                  "Match on ICMP fields";
+              }
             }
 
             container any-acl {
