@@ -438,7 +438,7 @@ module ietf-access-control-list {
             container ipv4-acl {
               if-feature ipv4-acl;
               must "derived-from(../../../../acl-type, " +
-                "'acl:ipv4-acl')";
+                   "'acl:ipv4-acl')";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
               description
@@ -448,7 +448,7 @@ module ietf-access-control-list {
             container ipv6-acl {
               if-feature ipv6-acl;
               must "derived-from(../../../../acl-type, " +
-                "'acl:ipv6-acl')";
+                   "'acl:ipv6-acl')";
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
               description
@@ -458,7 +458,7 @@ module ietf-access-control-list {
             container l2-l3-ipv4-acl {
               if-feature mixed-ipv4-acl;
               must "derived-from(../../../../acl-type, " +
-                "'acl:mixed-l2-l3-ipv4-acl')";
+                   "'acl:mixed-l2-l3-ipv4-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -470,7 +470,7 @@ module ietf-access-control-list {
             container l2-l3-ipv6-acl {
               if-feature mixed-ipv6-acl;
               must "derived-from(../../../../acl-type, " +
-                "'acl:mixed-l2-l3-ipv6-acl')";
+                   "'acl:mixed-l2-l3-ipv6-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv6-header-fields;
@@ -482,7 +482,7 @@ module ietf-access-control-list {
             container l2-l3-ipv4-ipv6-acl {
               if-feature l2-l3-ipv4-ipv6-acl;
               must "derived-from(../../../../acl-type, " +
-                "'acl:mixed-l2-l3-ipv4-ipv6-acl')";
+                   "'acl:mixed-l2-l3-ipv4-ipv6-acl')";
               uses packet-fields:acl-eth-header-fields;
               uses packet-fields:acl-ip-header-fields;
               uses packet-fields:acl-ipv4-header-fields;
@@ -549,17 +549,17 @@ module ietf-access-control-list {
               default log-none;
               description
                 "Specifies the log action and destination for
-                   matched packets. Default value is not to log the
-                   packet.";
+                 matched packets. Default value is not to log the
+                 packet.";
             }
 
             leaf icmp-off {
               type boolean;
               default "false";
               description
-                "true indicates ICMP errors will never be generated
-                   in response to an ICMP error message. false indicates
-                   ICMP error will be generated.";
+                "True indicates ICMP errors will never be generated
+                 in response to an ICMP error message. false indicates
+                 ICMP error will be generated.";
             }
           }
           uses acl-counters;
