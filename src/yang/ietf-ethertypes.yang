@@ -348,18 +348,6 @@ module ietf-ethertypes {
           reference
             "IEC 62439-3:2016.";
         }
-        enum ctp {
-          value 36864;
-          description
-            "Ethernet Configuration Test Protocol (CTP). Hex
-             value of 0x9000.";
-        }
-        enum vlan-double-tagged {
-          value 37120;
-          description
-            "VLAN-tagged frame with double tagging. Hex value
-             of 0x9100.";
-        }
       }
     }
     description
