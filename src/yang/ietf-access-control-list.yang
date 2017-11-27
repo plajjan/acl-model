@@ -28,7 +28,7 @@ module ietf-access-control-list {
      Editor: Lisa Huang
              lyihuang16@gmail.com
      Editor: Sonal Agarwal
-             sagarwal12@cisco.com
+             sagarwal12@gmail.com
      Editor: Dana Blair
              dblair@cisco.com";
 
@@ -291,13 +291,13 @@ module ietf-access-control-list {
 
   feature global-attachment {
     description
-    	  "ACLs are set globally.";
+      "ACLs are set globally.";
   }
   
   /*
    * Typedefs
    */
-  typedef type {
+  typedef acl-type {
     type identityref {
       base acl-base;
     }
@@ -340,10 +340,10 @@ module ietf-access-control-list {
 
         leaf type {
           type leafref {
-            path "../../../../../../acl/type";
+            path "../../../../../../acl/acl-type";
           }
           description
-            "Reference to the ACL set type applied on ingress";
+            "Reference to the ACL set acl-type applied on ingress";
         }
 
         list ace {
@@ -436,8 +436,8 @@ module ietf-access-control-list {
            and value of this name, possibly space and special
            characters are not allowed.";
       }
-      leaf type {
-        type type;
+      leaf acl-type {
+        type acl-type;
         description
           "Type of access control list. Indicates the primary intended
            type of match criteria (e.g. ethernet, IPv4, IPv6, mixed,
@@ -466,10 +466,10 @@ module ietf-access-control-list {
               "The rules in this set determine what fields will be
                matched upon before any action is taken on them.
                The rules are selected based on the feature set
-               defined by the server and the type defined.";
+               defined by the server and the acl-type defined.";
 
             container eth {
-              when "derived-from(../../../../type, " +
+              when "derived-from(../../../../acl-type, " +
                    "'acl:eth-acl-type')";
               if-feature match-on-eth;
               uses packet-fields:acl-eth-header-fields;
@@ -477,45 +477,49 @@ module ietf-access-control-list {
                 "Rule set that supports ethernet headers.";
             }
 
-            container ipv4 {
-              when "derived-from(../../../../type, " +
-                   "'acl:ipv4-acl-type')";
-              if-feature match-on-ipv4;
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv4-header-fields;
-              description
-                "Rule set that supports IPv4 headers.";
+            choice l3 {
+              container ipv4 {
+                when "derived-from(../../../../acl-type, " +
+                     "'acl:ipv4-acl-type')";
+                if-feature match-on-ipv4;
+                uses packet-fields:acl-ip-header-fields;
+                uses packet-fields:acl-ipv4-header-fields;
+                description
+                  "Rule set that supports IPv4 headers.";
+              }
+
+              container ipv6 {
+                when "derived-from(../../../../acl-type, " +
+                     "'acl:ipv6-acl-type')";
+                if-feature match-on-ipv6;
+                uses packet-fields:acl-ip-header-fields;
+                uses packet-fields:acl-ipv6-header-fields;
+                description
+                  "Rule set that supports IPv6 headers.";
+              }
             }
 
-            container ipv6 {
-              when "derived-from(../../../../type, " +
-                   "'acl:ipv6-acl-type')";
-              if-feature match-on-ipv6;
-              uses packet-fields:acl-ip-header-fields;
-              uses packet-fields:acl-ipv6-header-fields;
-              description
-                "Rule set that supports IPv6 headers.";
-            }
+            choice l4 {
+              container tcp {
+                if-feature match-on-tcp;
+                uses packet-fields:acl-tcp-header-fields;
+                  description
+                    "Rule set that defines TCP headers.";
+              }
 
-            container tcp {
-              if-feature match-on-tcp;
-              uses packet-fields:acl-tcp-header-fields;
-              description
-                "Rule set that defines TCP headers.";
-            }
+              container udp {
+                if-feature match-on-udp;
+                uses packet-fields:acl-udp-header-fields;
+                description
+                  "Rule set that defines UDP headers.";
+              }
 
-            container udp {
-              if-feature match-on-udp;
-              uses packet-fields:acl-udp-header-fields;
-              description
-                "Rule set that defines UDP headers.";
-            }
-
-            container icmp {
-              if-feature match-on-icmp;
-              uses packet-fields:acl-icmp-header-fields;
-              description
-                "Rule set that defines ICMP headers.";
+              container icmp {
+                if-feature match-on-icmp;
+                uses packet-fields:acl-icmp-header-fields;
+                description
+                  "Rule set that defines ICMP headers.";
+              }
             }
             
             leaf egress-interface {
@@ -576,16 +580,9 @@ module ietf-access-control-list {
       description
         "Enclosing container for the list of 
          attachment-points on which ACLs are set";
-
-      leaf global {
-        if-feature global-attachment;
-        type empty;
-        description
-          "ACL rule is global";
-      }
       
       list interface {
-    	    if-feature interface-attachment;
+        if-feature interface-attachment;
         key "interface-id";
         description
           "List of interfaces on which ACLs are set";
