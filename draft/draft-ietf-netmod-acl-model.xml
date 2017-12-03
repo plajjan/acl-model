@@ -40,7 +40,7 @@
       <organization>Cisco Systems, Inc.</organization>
 
       <address>
-        <email>agarwaso@cisco.com</email>
+        <email>sagarwal12@gmail.com</email>
       </address>
     </author>
 
@@ -262,7 +262,7 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD-tree.txt)
         a "match" has been identified. In addition to permit and deny for
         actions, a logging option allows for a match to be logged that can be
         used to determine which rule was matched upon. The model also defines
-        the ability for ACL's to be attached to a particular interface. </t>
+        the ability for ACL's to be attached to a particular interface.</t>
 
         <t>Statistics in the ACL can be collected for an "ace" or for an
         "interface". The feature statements defined for statistics can be used
