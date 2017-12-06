@@ -494,35 +494,6 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
     </references>
 
     <section anchor="app-additional" title="Extending ACL model examples">
-      <section anchor="routeacl"
-               title="Example of extending existing model for route filtering">
-        <t>With proposed modular design, it is easy to extend the model with
-        other features. Those features can be standard features, like route
-        filters. Route filters match on specific IP addresses or ranges of
-        prefixes. Much like ACLs, they include some match criteria and
-        corresponding match action(s). For that reason, it is very simple to
-        extend existing ACL model with route filtering. The combination of a
-        route prefix and prefix length along with the type of match determines
-        how route filters are evaluated against incoming routes. Different
-        vendors have different match types and in this model we are using only
-        ones that are common across all vendors participating in this draft.
-        As in this example, the base ACL model can be extended with company
-        proprietary extensions, described in the next section.</t>
-
-        <figure>
-          <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(../src/yang/example-ext-route-filter@YYYY-MM-DD-tree.txt)
-	  ]]></artwork>
-        </figure>
-
-        <figure>
-          <artwork><![CDATA[
-file "example-ext-route-filter@YYYY-MM-DD.yang"
-INSERT_TEXT_FROM_FILE(../src/yang/example-ext-route-filter@YYYY-MM-DD.yang)
-        ]]></artwork>
-        </figure>
-      </section>
-
       <!--routeacl-->
 
       <section anchor="newcoacl" title="A company proprietary module example">
