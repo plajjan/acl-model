@@ -581,10 +581,17 @@ module ietf-access-control-list {
         "Enclosing container for the list of 
          attachment-points on which ACLs are set";
       
-      augment "/if:interfaces/if:interface" {
+      list interface {
         if-feature interface-attachment;
+        key "interface-id";
         description
           "List of interfaces on which ACLs are set";
+        
+        leaf interface-id {
+        	  type if:interface-ref;
+          description
+            "Reference to the interface id list key";
+        }
 
         container ingress {
           uses interface-acl;
