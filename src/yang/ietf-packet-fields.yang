@@ -232,7 +232,9 @@ module ietf-packet-fields {
     leaf protocol {
       type uint8;
       description
-        "Internet Protocol number.";
+        "Internet Protocol number. Refers to the protocol of the
+         payload. In IPv6, this field is known as 'next-header.";
+      reference "RFC 719, RFC 2460.";
     }
     uses acl-transport-header-fields;
   }
@@ -308,16 +310,6 @@ module ietf-packet-fields {
   grouping acl-ipv6-header-fields {
     description
       "Fields in IPv6 header";
-
-    leaf next-header {
-      type uint8;
-      description
-        "Identifies the type of header immediately following the
-         IPv6 header. Uses the same values as the IPv4 Protocol
-         field.";
-      reference
-        "RFC 2460";
-    }
 
     leaf destination-ipv6-network {
       type inet:ipv6-prefix;

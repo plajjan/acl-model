@@ -6,7 +6,7 @@
       <acl-type>ipv4-acl</acl-type>
       <aces>
         <ace>
-          <rule-name>rule1</rule-name>
+          <name>rule1</name>
           <matches>
             <ipv4-acl>
               <protocol>tcp</protocol>
