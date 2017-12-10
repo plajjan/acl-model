@@ -338,9 +338,9 @@ module ietf-access-control-list {
             "Reference to the ACL name applied on ingress";
         }
 
-        leaf acl-type {
+        leaf type {
           type leafref {
-            path "../../../../../../acl/acl-type";
+            path "../../../../../../acl/type";
           }
           description
             "Reference to the ACL set acl-type applied on ingress";
@@ -436,7 +436,7 @@ module ietf-access-control-list {
            and value of this name, possibly space and special
            characters are not allowed.";
       }
-      leaf acl-type {
+      leaf type {
         type acl-type;
         description
           "Type of access control list. Indicates the primary intended
@@ -472,7 +472,7 @@ module ietf-access-control-list {
 
             choice l2 {
               container eth {
-                when "derived-from(../../../../acl-type, " +
+                when "derived-from(../../../../type, " +
                      "'acl:eth-acl-type')";
                 if-feature match-on-eth;
                 uses packet-fields:acl-eth-header-fields;
@@ -486,7 +486,7 @@ module ietf-access-control-list {
 
             choice l3 {
               container ipv4 {
-                when "derived-from(../../../../acl-type, " +
+                when "derived-from(../../../../type, " +
                      "'acl:ipv4-acl-type')";
                 if-feature match-on-ipv4;
                 uses packet-fields:acl-ip-header-fields;
@@ -496,7 +496,7 @@ module ietf-access-control-list {
               }
 
               container ipv6 {
-                when "derived-from(../../../../acl-type, " +
+                when "derived-from(../../../../type, " +
                      "'acl:ipv6-acl-type')";
                 if-feature match-on-ipv6;
                 uses packet-fields:acl-ip-header-fields;
