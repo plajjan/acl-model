@@ -274,24 +274,13 @@ module ietf-access-control-list {
       "ACL counters are aggregated over all interfaces, and reported
        only per ACL entry";
   }
-
-  feature interface-acl-aggregate {
-    description
-      "ACL counters are reported per interface, and also aggregated
-       and reported per ACL entry";
-  }
-  
+ 
   /*
    * Attachment point features
    */
   feature interface-attachment {
     description
       "ACLs are set on interfaces.";
-  }
-
-  feature global-attachment {
-    description
-      "ACLs are set globally.";
   }
   
   /*
@@ -306,14 +295,9 @@ module ietf-access-control-list {
        (ACL) type";
   }
 
-  typedef acl-ref {
-    type leafref {
-      path "/access-lists/acl/name";
-    }
-    description
-      "This type is used by data models that need to reference an
-       Access Control List";
-  }
+  /*
+   * Groupings
+   */
 
   grouping interface-acl {
     description
@@ -338,16 +322,8 @@ module ietf-access-control-list {
             "Reference to the ACL name applied on ingress";
         }
 
-        leaf type {
-          type leafref {
-            path "../../../../../../acl/type";
-          }
-          description
-            "Reference to the ACL set acl-type applied on ingress";
-        }
-
-        list ace {
-          if-feature "interface-stats or interface-acl-aggregate";
+        list ace-statistics {
+          if-feature "interface-stats";
           key "name";
           config false;
           description
@@ -467,8 +443,8 @@ module ietf-access-control-list {
                matched upon before any action is taken on them.
                The rules are selected based on the feature set
                defined by the server and the acl-type defined.
-               If the packet does not match any of the fields
-               defined, it is considered match for 'any'.";
+               If no matches are specified, it is the equivalent
+               of 'any'.";
 
             choice l2 {
               container eth {
@@ -583,11 +559,10 @@ module ietf-access-control-list {
             }
           }
           container statistics {
-            if-feature "acl-aggregate-stats or interface-acl-aggregate";
+            if-feature "acl-aggregate-stats";
             config false;
             description
-              "Statistics gathered per interface or across all
-               interfaces.";
+              "Statistics gathered across all interfaces.";
             uses acl-counters;
           }
         }
@@ -605,7 +580,7 @@ module ietf-access-control-list {
           "List of interfaces on which ACLs are set";
         
         leaf interface-id {
-        	  type if:interface-ref;
+          type if:interface-ref;
           description
             "Reference to the interface id list key";
         }

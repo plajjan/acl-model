@@ -60,13 +60,13 @@ module ietf-packet-fields {
    */
   typedef operator {
     type enumeration {
-      enum lt {
+      enum lte {
         description
-          "Less than.";
+          "Less than or equal.";
       }
-      enum gt {
+      enum gte {
         description
-          "Greater than.";
+          "Greater than or equal.";
       }
       enum eq {
         description
@@ -85,98 +85,52 @@ module ietf-packet-fields {
        therefore further qualifies lower-port only.";
   }
 
-  grouping acl-transport-header-fields {
+  /*
+   * Groupings
+   */
+  grouping port-range-or-operator {
+    choice port-range-or-operator {
+      case range {
+        leaf lower-port {
+          type inet:port-number;
+          must ". <= ../upper-port" {
+            error-message
+              "The lower-port must be less than or equal to
+               upper-port.";
+          }
+          mandatory true;
+          description
+            "Lower boundry for a port.";
+        }
+        leaf upper-port {
+          type inet:port-number;
+          mandatory true;
+          description
+            "Upper boundry for port.";
+        }
+      }
+      case operator {
+        leaf operator {
+          type operator;
+          default eq;
+          description
+            "Operator to be applied on the port below.";
+        }
+        leaf port {
+          type inet:port-number;
+          mandatory true;
+          description
+            "Port number along with operator on which to
+             match.";
+        }
+      }
+      description
+        "Choice of specifying a port range or a single
+         port along with an operator.";
+    }
     description
-      "Transport header fields";
-    container source-port-range {
-      presence "Enables setting source port range";
-      description
-        "Inclusive range representing source ports to be used.
-         When only lower-port is present, it represents a single
-         port and eq operator is assumed to be default.
-
-         When both lower-port and upper-port are specified,
-         it implies a range inclusive of both values.
-
-         If no port is specified, 'any' (wildcard) is assumed.";
-
-      leaf lower-port {
-        type inet:port-number;
-        mandatory true;
-        description
-          "Lower boundary for port.";
-      }
-      leaf upper-port {
-        type inet:port-number;
-        must ". >= ../lower-port" {
-          error-message
-          "The upper-port must be greater than or equal
-           to lower-port";
-        }
-        description
-          "Upper boundary for port. If it exists, the upper port
-           must be greater or equal to lower-port.";
-      }
-      leaf operation {
-        type operator;
-        must "(../lower-port and not(../upper-port))" {
-          error-message
-            "If lower-port is specified, and an operator is also
-             specified, then upper-port should not be specified.";
-          description
-            "If lower-port is specified, and an operator is also
-             specified, then upper-port should not be specified.";
-        }
-        default eq;
-        description
-          "Operator to be applied on the lower-port.";
-      }
-    }
-
-    container destination-port-range {
-      presence "Enables setting destination port range";
-      description
-        "Inclusive range representing destination ports to be used.
-         When only lower-port is present, it represents a single
-         port and eq operator is assumed to be default.
-
-         When both lower-port and upper-port are specified,
-         it implies a range inclusive of both values.
-
-         If no port is specified, 'any' (wildcard) is assumed. ";
-
-      leaf lower-port {
-        type inet:port-number;
-        mandatory true;
-        description
-          "Lower boundary for port.";
-      }
-      leaf upper-port {
-        type inet:port-number;
-        must ". >= ../lower-port" {
-          error-message
-            "The upper-port must be greater than or equal
-             to lower-port";
-        }
-        description
-          "Upper boundary for port. If existing, the upper port must
-          be greater or equal to lower-port";
-      }
-      leaf operations {
-        type operator;
-        must "(../lower-port and not(../upper-port))" {
-          error-message
-            "If lower-port is specified, and an operator is also
-             specified, then upper-port should not be specified.";
-          description
-            "If lower-port is specified, and an operator is also
-             specified, then upper-port should not be specified.";
-        }
-        default eq;
-        description
-          "Operator to be applied on the lower-port.";
-      }
-    }
+      "Grouping for port definitions in the form of a
+       choice statement.";
   }
 
   grouping acl-ip-header-fields {
@@ -236,7 +190,16 @@ module ietf-packet-fields {
          payload. In IPv6, this field is known as 'next-header.";
       reference "RFC 719, RFC 2460.";
     }
-    uses acl-transport-header-fields;
+    container source-port-range-or-operator {
+      uses port-range-or-operator;
+      description
+        "Source port definition.";
+    }
+    container destination-port-range-or-operator {
+      uses port-range-or-operator;
+      description
+        "Destination port definition.";
+    }
   }
 
   grouping acl-ipv4-header-fields {
