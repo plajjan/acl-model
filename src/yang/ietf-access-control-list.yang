@@ -519,7 +519,8 @@ module ietf-access-control-list {
             if-feature "acl-aggregate-stats";
             config false;
             description
-              "Statistics gathered across all interfaces.";
+              "Statistics gathered acrross all attchment points for the
+               given ACL.";
             uses acl-counters;
           }
         }
