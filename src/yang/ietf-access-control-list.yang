@@ -298,49 +298,6 @@ module ietf-access-control-list {
   /*
    * Groupings
    */
-
-  grouping interface-acl {
-    description
-      "Grouping for per-interface ingress ACL data";
-
-    container acl-sets {
-      description
-        "Enclosing container the list of ingress ACLs on the
-         interface";
-
-      list acl-set {
-        key "name";
-        ordered-by user;
-        description
-          "List of ingress ACLs on the interface";
-
-        leaf name {
-          type leafref {
-            path "../../../../../../acl/name";
-          }
-          description
-            "Reference to the ACL name applied on ingress";
-        }
-
-        list ace-statistics {
-          if-feature "interface-stats";
-          key "name";
-          config false;
-          description
-            "List of access list entries(ACE)";
-          leaf name {
-            type leafref {
-              path "../../../../../../../acl/aces/ace/name";
-            }
-            description
-              "The ace name";
-          }
-          uses acl-counters;
-        }
-      }
-    }
-  }
-
   grouping acl-counters {
     description
       "Common grouping for ACL counters";
@@ -573,6 +530,51 @@ module ietf-access-control-list {
         "Enclosing container for the list of 
          attachment-points on which ACLs are set";
       
+      /*
+       * Groupings
+       */
+      grouping interface-acl {
+        description
+          "Grouping for per-interface ingress ACL data";
+
+        container acl-sets {
+          description
+            "Enclosing container the list of ingress ACLs on the
+             interface";
+
+          list acl-set {
+            key "name";
+            ordered-by user;
+            description
+              "List of ingress ACLs on the interface";
+
+            leaf name {
+              type leafref {
+                path "../../../../../../acl/name";
+              }
+              description
+                "Reference to the ACL name applied on ingress";
+            }
+
+            list ace-statistics {
+              if-feature "interface-stats";
+              key "name";
+              config false;
+              description
+                "List of access list entries(ACE)";
+              leaf name {
+                type leafref {
+                  path "../../../../../../../acl/aces/ace/name";
+                }
+                description
+                  "The ace name";
+              }
+              uses acl-counters;
+            }
+          }
+        }
+      }
+
       list interface {
         if-feature interface-attachment;
         key "interface-id";
