@@ -14,14 +14,14 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <?rfc compact="yes"?>
 <!-- This defines the specific filename and version number of your draft (and inserts the appropriate IETF boilerplate -->
-<rfc category="std" docName="draft-ietf-netmod-acl-model-14" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-netmod-acl-model-15" ipr="trust200902">
   <front>
     <title abbrev="ACL YANG model">Network Access Control List (ACL) YANG Data
     Model</title>
 
     <author fullname="Mahesh Jethanandani" initials="M."
             surname="Jethanandani">
-      <organization>Cisco Systems, Inc</organization>
+      <organization/>
 
       <address>
         <email>mjethanandani@gmail.com</email>
@@ -70,7 +70,7 @@
       </address>
     </author>
 
-    <date day="03" month="October" year="2017"/>
+    <date day="12" month="January" year="2018"/>
 
     <area>Operations and Management Area</area>
 
@@ -107,9 +107,9 @@
       configure device forwarding behavior. It is used in many networking
       technologies such as Policy Based Routing, Firewalls etc.</t>
 
-      <t>An ACL is an ordered set of rules that is used to filter traffic on a
-      networking device. Each rule is represented by an Access Control Entry
-      (ACE).</t>
+      <t>An ACL is an ordered-by-user set of rules that is used to filter
+      traffic on a networking device. Each rule is represented by an Access
+      Control Entry (ACE).</t>
 
       <t>Each ACE has a group of match criteria and a group of action
       criteria.</t>
@@ -142,7 +142,8 @@
       attachment points. Once attached, it is used for filtering traffic using
       the match criteria in the ACE's and taking appropriate action(s) that
       have been configured against that ACE. In order to apply an ACL to any
-      attachment point, vendors would have to augment the ACL YANG model.</t>
+      attachment point other than an interface, vendors would have to augment
+      the ACL YANG model.</t>
 
       <section title="Definitions and Acronyms">
         <t>ACE: Access Control Entry</t>
@@ -172,7 +173,7 @@
     <section anchor="problem" title="Problem Statement">
       <t>This document defines a <xref target="RFC6020">YANG</xref> data model
       for the configuration of ACLs. It is very important that model can be
-      easily used by applications/attachments.</t>
+      used easily by applications/attachments.</t>
 
       <t>ACL implementations in every device may vary greatly in terms of the
       filter constructs and actions that they support. Therefore this draft
@@ -184,10 +185,10 @@
 
     <section anchor="design" title="Understanding ACL's Filters and Actions">
       <t>Although different vendors have different ACL data models, there is a
-      common understanding of what access control list (ACL) is. A network
+      common understanding of what Access Control List (ACL) is. A network
       system usually have a list of ACLs, and each ACL contains an ordered
-      list of rules, also known as access list entries &ndash; ACEs. Each ACE
-      has a group of match criteria and a group of action criteria. The match
+      list of rules, also known as Access Control Entries (ACE). Each ACE has
+      a group of match criteria and a group of action criteria. The match
       criteria consist of packet header matching. It as also possible for ACE
       to match on metadata, if supported by the vendor. Packet header matching
       applies to fields visible in the packet such as address or class of
@@ -210,9 +211,17 @@
       <t>This draft tries to address the commonalities between all vendors and
       create a common model, which can be augmented with proprietary models.
       The base model is simple and with this design we hope to achieve enough
-      flexibility for each vendor to extend the base model. The use of feature
-      statements in the document allows vendors to advertise match rules they
-      support.</t>
+      flexibility for each vendor to extend the base model. </t>
+
+      <t>The use of feature statements in the model allows vendors to
+      advertise match rules they are capable and willing support. There are
+      two sets of feature statements a device needs to advertise. The first
+      set of feature statements specify the capability of the device. These
+      include features such as "Device can support ethernet headers" or
+      "Device can support of IPv4 headers". The second set of feature
+      statements specify the combinations of headers the device is willing to
+      support. These include features such as "Plain IPv6 ACL supported" or
+      "Ethernet, IPv4 and IPv6 ACL combinations supported". </t>
 
       <section anchor="aclmodules" title="ACL Modules">
         <t>There are two YANG modules in the model. The first module,
@@ -220,8 +229,9 @@
         common to all ACLs regardless of their type or vendor. In effect, the
         module can be viewed as providing a generic ACL "superclass". It
         imports the second module, "ietf-packet-fields". The match container
-        in "ietf-access-control-list" uses groupings in "ietf-packet-fields".
-        The combination of if-feature checks and must statements allow for the
+        in "ietf-access-control-list" uses groupings in "ietf-packet-fields"
+        to specify match fields such as port numbers or protocol. The
+        combination of if-feature checks and must statements allow for the
         selection of relevant match fields that a user can define rules
         for.</t>
 
@@ -245,29 +255,31 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD-tree.txt)
       <section anchor="ietfacl" title="IETF Access Control List module">
         <t>"ietf-access-control-list" is the standard top level module for
         access lists. The "access-lists" container stores a list of "acl".
-        Each "acl" has information identifying the access list by a
-        name("acl-name") and a list("access-list-entries") of rules associated
-        with the "acl-name". Each of the entries in the
-        list("access-list-entries"), indexed by the string "rule-name", has
+        Each "acl" has information identifying the access list by a name
+        ("name") and a list ("aces") of rules associated with the "name". Each
+        of the entries in the list ("aces"), indexed by the string "name", has
         containers defining "matches" and "actions".</t>
 
-        <t>The model uses defines several ACL types in the form of identities
-        and features. Features are used by implementors to select the ACL
-        types the system can support. These types are implicitly inherited by
-        the "ace", thus safeguarding against misconfiguration of "ace" types
-        in an "acl".</t>
+        <t>The model defines several ACL types and actions in the form of
+        identities and features. Features are used by implementors to select
+        the ACL types the system can support and identities are used to
+        validate the types that have been selected. These types are implicitly
+        inherited by the "ace", thus safeguarding against misconfiguration of
+        "ace" types in an "acl".</t>
 
         <t>The "matches" define criteria used to identify patterns in
-        "ietf-packet-fields". The "actions" define behavior to undertake once
-        a "match" has been identified. In addition to permit and deny for
-        actions, a logging option allows for a match to be logged that can be
-        used to determine which rule was matched upon. The model also defines
-        the ability for ACL's to be attached to a particular interface.</t>
+        "ietf-packet-fields". The choice statements within the match container
+        allow for selection of one header within each of "l2", "l3", or "l4"
+        headers. The "actions" define behavior to undertake once a "match" has
+        been identified. In addition to permit and deny for actions, a logging
+        option allows for a match to be logged that can be used to determine
+        which rule was matched upon. The model also defines the ability for
+        ACL's to be attached to a particular interface.</t>
 
         <t>Statistics in the ACL can be collected for an "ace" or for an
         "interface". The feature statements defined for statistics can be used
-        to determine whether statistics are being collected per "ace", per
-        "interface" or both.</t>
+        to determine whether statistics are being collected per "ace", or per
+        "interface".</t>
 
         <figure>
           <artwork><![CDATA[
@@ -285,7 +297,7 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD.yang)
       <section anchor="pktheaders" title="IETF Packet Fields module">
         <t>The packet fields module defines the necessary groups for matching
         on fields in the packet including ethernet, ipv4, ipv6, and transport
-        layer fields. The 'acl-type' node determines which of these fields get
+        layer fields. The "type" node determines which of these fields get
         included for any given ACL with the exception of TCP, UDP and ICMP
         header fields. Those fields can be used in conjunction with any of the
         above layer 2 or layer 3 fields.</t>
@@ -341,36 +353,49 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
 
         <figure>
           <artwork><![CDATA[
-     <source-port-range>
-       <lower-port>16384</lower-port>
-       <upper-port>16387</upper-port>
-     </source-port-range>
+     <source-port-range-or-operator>
+       <port-range-or-operator>
+         <range>
+           <lower-port>16384</lower-port>
+           <upper-port>16387</upper-port>
+         </range>
+       </port-range-or-operator>
+     <source-port-range-or-operator>
   ]]></artwork>
         </figure>
 
-        <t>This represents source ports 16384,16385, 16386, and 16387.</t>
+        <t>This represents source ports 16384, 16385, 16386, and 16387.</t>
 
         <t>With the follow XML snippet:</t>
 
         <figure>
           <artwork><![CDATA[
-      <source-port-range>
-        <lower-port>16384</lower-port>
-        <upper-port>65535</upper-port>
-      </source-port-range>
+      <source-port-range-or-operator>
+        <port-range-or-operator>
+          <range>
+            <lower-port>16384</lower-port>
+            <upper-port>65535</upper-port>
+          </range>
+        </port-range-or-operator>
+      </source-port-range-or-operator>
  ]]></artwork>
         </figure>
 
-        <t>This represents source ports greater than/equal to 16384 and less
-        than equal to 65535.</t>
+        <t>This represents source ports greater than or equal to 16384 and
+        less than equal to 65535.</t>
 
         <t>With the follow XML snippet:</t>
 
         <figure>
           <artwork><![CDATA[
-      <source-port-range>
-        <lower-port>21</lower-port>
-      </source-port-range>
+      <source-port-range-or-operator>
+        <port-range-or-operator>
+          <operator>
+            <operator>eq</operator>
+            <port>21</port>
+          </operator>
+        </port-range-or-operator>
+      </source-port-range-or-operator>
    ]]></artwork>
         </figure>
 
@@ -381,10 +406,14 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
 
         <figure>
           <artwork><![CDATA[
-      <source-port-range>
-        <lower-port>21</lower-port>
-        <operations>neq</operations>
-      </source-port-range>
+      <source-port-range-or-operator>
+        <port-range-or-operator>
+          <operator>
+            <operator>neq</operator>
+            <port>21</port>
+          </operator>
+        </port-range-or-operator>
+      </source-port-range-or-operator>
 
 ]]></artwork>
         </figure>
@@ -410,11 +439,11 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
       <t>These are the subtrees and data nodes and their
       sensitivity/vulnerability:</t>
 
-      <t>/access-lists/acl/access-list-entries: This list specifies all the
-      configured access list entries on the device. Unauthorized write access
-      to this list can allow intruders to access and control the system.
-      Unauthorized read access to this list can allow intruders to spoof
-      packets with authorized addresses thereby compromising the system.</t>
+      <t>/access-lists/acl/aces: This list specifies all the configured access
+      control entries on the device. Unauthorized write access to this list
+      can allow intruders to access and control the system. Unauthorized read
+      access to this list can allow intruders to spoof packets with authorized
+      addresses thereby compromising the system.</t>
     </section>
 
     <section anchor="iana" title="IANA Considerations">
@@ -460,8 +489,8 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
       participation from many vendors.</t>
 
       <t>Authors would like to thank Jason Sterne, Lada Lhotka, Juergen
-      Schoenwalder, David Bannister, and Jeff Haas for their review of and
-      suggestions to the draft.</t>
+      Schoenwalder, David Bannister, Jeff Haas, Kristian Larsson and Einar
+      Nilsen-Nygaard for their review of and suggestions to the draft.</t>
     </section>
 
     <section title="Open Issues">

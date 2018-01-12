@@ -36,7 +36,7 @@ module ietf-access-control-list {
     "This YANG module defines a component that describe the
      configuration of Access Control Lists (ACLs).
 
-     Copyright (c) 2017 IETF Trust and the persons identified as
+     Copyright (c) 2018 IETF Trust and the persons identified as
      the document authors.  All rights reserved.
      Redistribution and use in source and binary forms, with or
      without modification, is permitted pursuant to, and subject
@@ -50,10 +50,7 @@ module ietf-access-control-list {
 
   revision YYYY-MM-DD {
     description
-      "Added feature and identity statements for different types
-       of rule matches. Split the matching rules based on the
-       feature statement and added a must statement within
-       each container.";
+      "Initial version.";
     reference
       "RFC XXX: Network Access Control List (ACL) YANG Data Model.";
   }
@@ -400,8 +397,10 @@ module ietf-access-control-list {
                matched upon before any action is taken on them.
                The rules are selected based on the feature set
                defined by the server and the acl-type defined.
-               If no matches are specified, it is the equivalent
-               of 'any'.";
+               If no matches are defined in a particular container,
+               then any packet will match that container. If no
+               matches are specified at all in an ACE, then any
+               packet will match the ACE.";
 
             choice l2 {
               container eth {
@@ -413,8 +412,8 @@ module ietf-access-control-list {
                   "Rule set that matches ethernet headers.";
               }
               description
-                "Choice of layer 2 headers, currently only
-                 ethernet.";
+                "Match layer 2 headers, for example ethernet
+                 header fields.";
             }
 
             choice l3 {
@@ -504,15 +503,6 @@ module ietf-access-control-list {
                 "Specifies the log action and destination for
                  matched packets. Default value is not to log the
                  packet.";
-            }
-
-            leaf icmp-off {
-              type boolean;
-              default "false";
-              description
-                "True indicates ICMP errors will never be generated
-                 in response to an ICMP error message. false indicates
-                 ICMP error will be generated.";
             }
           }
           container statistics {

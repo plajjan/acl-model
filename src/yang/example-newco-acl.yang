@@ -32,7 +32,7 @@ module example-newco-acl {
           "ietf-acl:matches" {
     description "Newco proprietary simple filter matches";
     choice protocol-payload-choice {
-      description "Newo proprietary payload match condition";
+      description "Newco proprietary payload match condition";
       list protocol-payload {
         key value-keyword;
         ordered-by user;
@@ -59,15 +59,15 @@ module example-newco-acl {
       case count {
         description "Count the packet in the named counter";
         leaf count {
-          type string;
-          description "";
+          type uint32;
+          description "Count";
         }
       }
       case policer {
         description "Name of policer to use to rate-limit traffic";
         leaf policer {
           type string;
-          description "";
+          description "Name of the policer";
         }
       }
       case hiearchical-policer {
@@ -75,21 +75,23 @@ module example-newco-acl {
                      rate-limit traffic";
         leaf hierarchitacl-policer {
           type string;
-          description "";
+          description "Name of the hierarchical policer.";
         }
       }
     }
   }
 
-  augment "/ietf-acl:access-lists/ietf-acl:acl" {
+  augment "/ietf-acl:access-lists/ietf-acl:acl" +
+          "/ietf-acl:aces/ietf-acl:ace/" +
+          "ietf-acl:actions" {
     description "Newco proprietary default action";
-    container default-actions {
+    leaf default-action {
       description
-        "Actions that occur if no access-list entry is matched.";
-      leaf deny {
-        type empty;
-        description "";
+        "Actions that occur if no ace is matched.";
+      type identityref {
+        base ietf-acl:forwarding-action;
       }
+      default ietf-acl:drop;
     }
   }
 
