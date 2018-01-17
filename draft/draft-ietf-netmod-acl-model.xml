@@ -70,7 +70,7 @@
       </address>
     </author>
 
-    <date day="12" month="January" year="2018"/>
+    <date day="16" month="January" year="2018"/>
 
     <area>Operations and Management Area</area>
 
@@ -211,17 +211,17 @@
       <t>This draft tries to address the commonalities between all vendors and
       create a common model, which can be augmented with proprietary models.
       The base model is simple and with this design we hope to achieve enough
-      flexibility for each vendor to extend the base model. </t>
+      flexibility for each vendor to extend the base model.</t>
 
       <t>The use of feature statements in the model allows vendors to
-      advertise match rules they are capable and willing support. There are
+      advertise match rules they are capable and willing to support. There are
       two sets of feature statements a device needs to advertise. The first
       set of feature statements specify the capability of the device. These
       include features such as "Device can support ethernet headers" or
       "Device can support of IPv4 headers". The second set of feature
       statements specify the combinations of headers the device is willing to
       support. These include features such as "Plain IPv6 ACL supported" or
-      "Ethernet, IPv4 and IPv6 ACL combinations supported". </t>
+      "Ethernet, IPv4 and IPv6 ACL combinations supported".</t>
 
       <section anchor="aclmodules" title="ACL Modules">
         <t>There are two YANG modules in the model. The first module,
