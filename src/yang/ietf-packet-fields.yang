@@ -1,4 +1,5 @@
 module ietf-packet-fields {
+  yang-version 1.1;
   namespace "urn:ietf:params:xml:ns:yang:ietf-packet-fields";
   prefix packet-fields;
 
@@ -191,15 +192,20 @@ module ietf-packet-fields {
          payload. In IPv6, this field is known as 'next-header.";
       reference "RFC 719, RFC 2460.";
     }
-    container source-port-range-or-operator {
-      uses port-range-or-operator;
-      description
-        "Source port definition.";
+
+    choice source-port-or-group {
+      container source-port-range-or-operator {
+        uses port-range-or-operator;
+        description
+          "Source port definition.";
+      }
     }
-    container destination-port-range-or-operator {
-      uses port-range-or-operator;
-      description
-        "Destination port definition.";
+    choice destination-port-or-group {
+      container destination-port-range-or-operator {
+        uses port-range-or-operator;
+        description
+          "Destination port definition.";
+      }
     }
   }
 
@@ -259,15 +265,23 @@ module ietf-packet-fields {
          assembling the fragments of a datagram.";
     }
 
-    leaf destination-ipv4-network {
-      type inet:ipv4-prefix;
-      description
-        "Destination IPv4 address prefix.";
+    choice destination-or-group {
+      case destination-ipv4-network {
+        leaf destination-ipv4-network {
+          type inet:ipv4-prefix;
+          description
+            "Destination IPv4 address prefix.";
+        }
+      }
     }
-    leaf source-ipv4-network {
-      type inet:ipv4-prefix;
-      description
-        "Source IPv4 address prefix.";
+    choice source-or-group {
+      case source-ipv4-network {
+        leaf source-ipv4-network {
+          type inet:ipv4-prefix;
+          description
+            "Source IPv4 address prefix.";
+        }
+      }
     }
   }
 
@@ -275,16 +289,24 @@ module ietf-packet-fields {
     description
       "Fields in IPv6 header";
 
-    leaf destination-ipv6-network {
-      type inet:ipv6-prefix;
-      description
-        "Destination IPv6 address prefix.";
+    choice destination-or-group {
+      case destination-ipv6-network {
+        leaf destination-ipv6-network {
+          type inet:ipv6-prefix;
+          description
+            "Destination IPv6 address prefix.";
+        }
+      }
     }
 
-    leaf source-ipv6-network {
-      type inet:ipv6-prefix;
-      description
-        "Source IPv6 address prefix.";
+    choice source-or-group {
+      case source-ipv6-network {
+        leaf source-ipv6-network {
+          type inet:ipv6-prefix;
+            description
+              "Source IPv6 address prefix.";
+        }
+      }
     }
 
     leaf flow-label {
