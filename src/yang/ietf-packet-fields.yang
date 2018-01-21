@@ -199,6 +199,9 @@ module ietf-packet-fields {
         description
           "Source port definition.";
       }
+      description
+        "Choice of specifying the source port or referring to
+         a group of source ports.";
     }
     choice destination-port-or-group {
       container destination-port-range-or-operator {
@@ -206,6 +209,9 @@ module ietf-packet-fields {
         description
           "Destination port definition.";
       }
+      description
+        "Choice of specifying a destination port or referring
+         to a group of destination ports.";
     }
   }
 
@@ -273,6 +279,9 @@ module ietf-packet-fields {
             "Destination IPv4 address prefix.";
         }
       }
+      description
+        "Choice of specifying a destination IPv4 address or
+         referring to a group of IPv4 destination addresses.";
     }
     choice source-or-group {
       case source-ipv4-network {
@@ -282,6 +291,9 @@ module ietf-packet-fields {
             "Source IPv4 address prefix.";
         }
       }
+      description
+        "Choice of specifying a source IPv4 address or
+         referring to a group of IPv4 source addresses.";
     }
   }
 
@@ -297,6 +309,10 @@ module ietf-packet-fields {
             "Destination IPv6 address prefix.";
         }
       }
+      description
+        "Choice of specifying a destination IPv6 address
+         or referring to a group of IPv6 destination
+         addresses.";
     }
 
     choice source-or-group {
@@ -307,6 +323,9 @@ module ietf-packet-fields {
               "Source IPv6 address prefix.";
         }
       }
+      description
+        "Choice of specifying a source IPv6 address or
+         referring to a group of IPv6 source addresses.";
     }
 
     leaf flow-label {
