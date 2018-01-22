@@ -250,7 +250,7 @@ module ietf-packet-fields {
          assembling the fragments of a datagram.";
     }
 
-    choice destination-or-group {
+    choice destination-network {
       case destination-ipv4-network {
         leaf destination-ipv4-network {
           type inet:ipv4-prefix;
@@ -262,7 +262,7 @@ module ietf-packet-fields {
         "Choice of specifying a destination IPv4 address or
          referring to a group of IPv4 destination addresses.";
     }
-    choice source-or-group {
+    choice source-network {
       case source-ipv4-network {
         leaf source-ipv4-network {
           type inet:ipv4-prefix;
@@ -280,7 +280,7 @@ module ietf-packet-fields {
     description
       "Fields in IPv6 header";
 
-    choice destination-or-group {
+    choice destination-network {
       case destination-ipv6-network {
         leaf destination-ipv6-network {
           type inet:ipv6-prefix;
@@ -294,7 +294,7 @@ module ietf-packet-fields {
          addresses.";
     }
 
-    choice source-or-group {
+    choice source-network {
       case source-ipv6-network {
         leaf source-ipv6-network {
           type inet:ipv6-prefix;
