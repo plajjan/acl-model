@@ -192,27 +192,6 @@ module ietf-packet-fields {
          payload. In IPv6, this field is known as 'next-header.";
       reference "RFC 719, RFC 2460.";
     }
-
-    choice source-port-or-group {
-      container source-port-range-or-operator {
-        uses port-range-or-operator;
-        description
-          "Source port definition.";
-      }
-      description
-        "Choice of specifying the source port or referring to
-         a group of source ports.";
-    }
-    choice destination-port-or-group {
-      container destination-port-range-or-operator {
-        uses port-range-or-operator;
-        description
-          "Destination port definition.";
-      }
-      description
-        "Choice of specifying a destination port or referring
-         to a group of destination ports.";
-    }
   }
 
   grouping acl-ipv4-header-fields {
