@@ -401,7 +401,7 @@ module ietf-packet-fields {
           position 0;
           description
             "ECN-nonce concealment protection";
-          reference "RFC 3540).";
+          reference "RFC 3540";
         }
         bit cwr {
           position 1;

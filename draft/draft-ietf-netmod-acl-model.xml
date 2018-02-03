@@ -14,7 +14,7 @@
 <!-- Change to "yes" if someone has disclosed IPR for the draft -->
 <?rfc compact="yes"?>
 <!-- This defines the specific filename and version number of your draft (and inserts the appropriate IETF boilerplate -->
-<rfc category="std" docName="draft-ietf-netmod-acl-model-15" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-netmod-acl-model-16" ipr="trust200902">
   <front>
     <title abbrev="ACL YANG model">Network Access Control List (ACL) YANG Data
     Model</title>
@@ -70,7 +70,7 @@
       </address>
     </author>
 
-    <date day="16" month="January" year="2018"/>
+    <date day="2" month="February" year="2018"/>
 
     <area>Operations and Management Area</area>
 
@@ -128,8 +128,8 @@
 
       <t>The actions specify what to do with the packet when the matching
       criteria is met. These actions are any operations that would apply to
-      the packet, such as counting, policing, or simply forwarding.The list of
-      potential actions is endless depending on the capabilities of the
+      the packet, such as counting, policing, or simply forwarding. The list
+      of potential actions is endless depending on the capabilities of the
       networked devices.</t>
 
       <t>Access Control List is also widely knowns as ACL (pronounce as [ak-uh
@@ -171,7 +171,7 @@
     <!-- intro -->
 
     <section anchor="problem" title="Problem Statement">
-      <t>This document defines a <xref target="RFC6020">YANG</xref> data model
+      <t>This document defines a <xref target="RFC7950">YANG</xref> data model
       for the configuration of ACLs. It is very important that model can be
       used easily by applications/attachments.</t>
 
@@ -281,6 +281,10 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD-tree.txt)
         to determine whether statistics are being collected per "ace", or per
         "interface".</t>
 
+        <t>This module imports definitions from <xref target="RFC6991">Common
+        YANG Data Types</xref>, and <xref target="RFC7223">A YANG Data Model
+        for Interface Management</xref>.</t>
+
         <figure>
           <artwork><![CDATA[
 <CODE BEGINS> file "ietf-access-control-list@YYYY-MM-DD.yang"
@@ -307,6 +311,19 @@ INSERT_TEXT_FROM_FILE(../src/yang/ietf-access-control-list@YYYY-MM-DD.yang)
         the base module simple. In case more match conditions are needed,
         those can be added by augmenting choices within container "matches" in
         ietf-access-control-list.yang model.</t>
+
+        <t>This module imports definitions from <xref target="RFC6991">Common
+        YANG Data Types</xref> and references <xref
+        target="RFC0791">IP</xref>, <xref target="RFC0792">ICMP</xref>, <xref
+        target="RFC2460">IPv6</xref>, <xref target="RFC2474">Definition of the
+        Differentiated Services Field in the IPv4 and IPv6 Headers</xref>,
+        <xref target="RFC3168">The Addition of Explicit Congestion
+        Notification (ECN) to IP</xref>, <xref target="RFC3540">Robust
+        Explicit Congestion Notification Signaling with Nonces</xref>, <xref
+        target="RFC4007">IPv6 Scoped Address Architecture</xref>, <xref
+        target="RFC4291">IPv6 Addressing Architecture</xref>, <xref
+        target="RFC5952">A Recommendation for IPv6 Address Text
+        Representation</xref>.</t>
 
         <figure>
           <artwork><![CDATA[
@@ -421,13 +438,19 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>The YANG module defined in this memo is designed to be accessed via
-      the <xref target="RFC6241">NETCONF </xref>. The lowest NETCONF layer is
-      the secure transport layer and the mandatory-to-implement secure
-      transport is <xref target="RFC6242">SSH</xref>. The NETCONF Access
-      Control Model ( <xref target="RFC6536">NACM</xref>) provides the means
-      to restrict access for particular NETCONF users to a pre-configured
-      subset of all available NETCONF protocol operations and content.</t>
+      <t>The YANG module specified in this document is defines a schema for
+      data that is designed to be accessed via network management protocol
+      such as <xref target="RFC6241">NETCONF </xref> or <xref
+      target="RFC8040">RESTCONF</xref>. The lowest NETCONF layer is the secure
+      transport layer and the mandatory-to-implement secure transport is <xref
+      target="RFC6242">SSH</xref>. The lowest RESTCONF layer is HTTPS, and the
+      mandatory-to-implement secure transport is <xref
+      target="RFC5246">TLS</xref>.</t>
+
+      <t>The NETCONF Access Control Model (<xref target="RFC6536">NACM</xref>)
+      provides the means to restrict access for particular NETCONF users to a
+      pre-configured subset of all available NETCONF protocol operations and
+      content.</t>
 
       <t>There are a number of data nodes defined in the YANG module which are
       writable/creatable/deletable (i.e., config true, which is the default).
@@ -460,7 +483,7 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
       <t>XML: N/A, the requested URI is an XML namespace.</t>
 
       <t>This document registers a YANG module in the YANG Module Names
-      registry [RFC6020].</t>
+      registry <xref target="RFC6020">YANG</xref>.</t>
 
       <t>name: ietf-access-control-list namespace:
       urn:ietf:params:xml:ns:yang:ietf-access-control-list prefix: ietf-acl
@@ -493,19 +516,32 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
       Nilsen-Nygaard for their review of and suggestions to the draft.</t>
     </section>
 
-    <section title="Open Issues">
-      <t><list style="symbols">
-          <t>The current model does not support the concept of "containers"
-          used to contain multiple addresses per rule entry.</t>
-        </list></t>
-    </section>
-
     <!---->
   </middle>
 
   <back>
     <references title="Normative References">
+      <?rfc include='reference.RFC.0791'?>
+
+      <?rfc include='reference.RFC.0792'?>
+
+      <?rfc include='reference.RFC.2460'?>
+
+      <?rfc include='reference.RFC.2474'?>
+
+      <?rfc include='reference.RFC.3168'?>
+
+      <?rfc include='reference.RFC.3540'?>
+
       <?rfc include='reference.RFC.3688'?>
+
+      <?rfc include='reference.RFC.4007'?>
+
+      <?rfc include='reference.RFC.4291'?>
+
+      <?rfc include='reference.RFC.5246'?>
+
+      <?rfc include='reference.RFC.5952'?>
 
       <?rfc include='reference.RFC.6020'?>
 
@@ -514,6 +550,14 @@ INSERT_TEXT_FROM_FILE(../src/yang/example-acl-configuration.xml)
       <?rfc include='reference.RFC.6242'?>
 
       <?rfc include='reference.RFC.6536'?>
+
+      <?rfc include='reference.RFC.6991'?>
+
+      <?rfc include='reference.RFC.7223'?>
+
+      <?rfc include='reference.RFC.7950'?>
+
+      <?rfc include='reference.RFC.8040'?>
     </references>
 
     <references title="Informative References">
