@@ -445,7 +445,7 @@ module ietf-access-control-list {
                 if-feature match-on-tcp;
                 uses pf:acl-tcp-header-fields;
                 choice source-port {
-                  container source-port-range-or-operator {
+                  case source-port-range-or-operator {
                     uses pf:port-range-or-operator;
                     description
                       "Source port definition.";
@@ -455,7 +455,7 @@ module ietf-access-control-list {
                      a group of source ports.";
                 }
                 choice destination-port {
-                  container destination-port-range-or-operator {
+                  case destination-port-range-or-operator {
                     uses pf:port-range-or-operator;
                     description
                       "Destination port definition.";
@@ -472,7 +472,7 @@ module ietf-access-control-list {
                 if-feature match-on-udp;
                 uses pf:acl-udp-header-fields;
                 choice source-port {
-                  container source-port-range-or-operator {
+                  case source-port-range-or-operator {
                     uses pf:port-range-or-operator;
                     description
                       "Source port definition.";
@@ -482,7 +482,7 @@ module ietf-access-control-list {
                      a group of source ports.";
                 }
                 choice destination-port {
-                  container destination-port-range-or-operator {
+                  case destination-port-range-or-operator {
                     uses pf:port-range-or-operator;
                     description
                       "Destination port definition.";
