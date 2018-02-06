@@ -444,25 +444,29 @@ module ietf-access-control-list {
               container tcp {
                 if-feature match-on-tcp;
                 uses pf:acl-tcp-header-fields;
-                choice source-port {
-                  case source-port-range-or-operator {
-                    uses pf:port-range-or-operator;
+                container source-port {
+                  choice source-port {
+                    case source-port-range-or-operator {
+                      uses pf:port-range-or-operator;
+                      description
+                        "Source port definition.";
+                    }
                     description
-                      "Source port definition.";
+                      "Choice of specifying the source port or referring to
+                      a group of source ports.";
                   }
-                  description
-                    "Choice of specifying the source port or referring to
-                     a group of source ports.";
                 }
-                choice destination-port {
-                  case destination-port-range-or-operator {
-                    uses pf:port-range-or-operator;
+                container destination-port {
+                  choice destination-port {
+                    case destination-port-range-or-operator {
+                      uses pf:port-range-or-operator;
+                      description
+                        "Destination port definition.";
+                    }
                     description
-                      "Destination port definition.";
+                      "Choice of specifying a destination port or referring
+                      to a group of destination ports.";
                   }
-                  description
-                    "Choice of specifying a destination port or referring
-                     to a group of destination ports.";
                 }
                 description
                   "Rule set that matches TCP headers.";
@@ -471,25 +475,29 @@ module ietf-access-control-list {
               container udp {
                 if-feature match-on-udp;
                 uses pf:acl-udp-header-fields;
-                choice source-port {
-                  case source-port-range-or-operator {
-                    uses pf:port-range-or-operator;
+                container source-port {
+                  choice source-port {
+                    case source-port-range-or-operator {
+                      uses pf:port-range-or-operator;
+                      description
+                        "Source port definition.";
+                    }
                     description
-                      "Source port definition.";
+                      "Choice of specifying the source port or referring to
+                      a group of source ports.";
                   }
-                  description
-                    "Choice of specifying the source port or referring to
-                     a group of source ports.";
                 }
-                choice destination-port {
-                  case destination-port-range-or-operator {
-                    uses pf:port-range-or-operator;
+                container destination-port {
+                  choice destination-port {
+                    case destination-port-range-or-operator {
+                      uses pf:port-range-or-operator;
+                      description
+                        "Destination port definition.";
+                    }
                     description
-                      "Destination port definition.";
+                      "Choice of specifying a destination port or referring
+                      to a group of destination ports.";
                   }
-                  description
-                    "Choice of specifying a destination port or referring
-                     to a group of destination ports.";
                 }
                 description
                   "Rule set that matches UDP headers.";
